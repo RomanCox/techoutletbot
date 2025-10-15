@@ -1,0 +1,78 @@
+{
+  "superUserIds": [349107025, 256626302],
+  "admins": [],
+  "texts": {
+    "welcome": "Привет! Я помогу с выбором товаров и связью с менеджером."
+  },
+  "buttons": [
+    {
+      "id": "PRODUCT_GROUP",
+      "chapter": "MAIN",
+      "label": "🛍 Группа товаров",
+      "type": "callback",
+      "payload": "PRODUCT_GROUP"
+    },
+    {
+      "id": "CONTACT_MANAGER",
+      "chapter": "MAIN",
+      "label": "👤 Связаться с менеджером",
+      "type": "url",
+      "url": "https://t.me/annacoxy"
+    },
+    {
+      "id": "PRODUCT_APPLE",
+      "chapter": "PRODUCT_GROUP",
+      "label": "Apple",
+      "type": "callback",
+      "payload": "PRODUCT_APPLE"
+    },
+    {
+      "id": "PRODUCT_ANDROIDS",
+      "chapter": "PRODUCT_GROUP",
+      "label": "Android телефоны",
+      "type": "callback",
+      "payload": "PRODUCT_GROUP"
+    },
+    {
+      "id": "PRODUCT_NOTEBOOKS",
+      "chapter": "PRODUCT_GROUP",
+      "label": "Ноутбуки",
+      "type": "callback",
+      "payload": "PRODUCT_GROUP"
+    },
+    {
+      "id": "PRODUCT_WIFI",
+      "chapter": "PRODUCT_GROUP",
+      "label": "Wi-Fi системы, усилители",
+      "type": "callback",
+      "payload": "PRODUCT_WIFI"
+    },
+    {
+      "id": "PRODUCT_CAMERAS",
+      "chapter": "PRODUCT_GROUP",
+      "label": "Камеры и аксессуары",
+      "type": "callback",
+      "payload": "PRODUCT_CAMERAS"
+    },
+    {
+      "id": "PRODUCT_CONSOLES",
+      "chapter": "PRODUCT_GROUP",
+      "label": "Игровые консоли и аксессуары",
+      "type": "callback",
+      "payload": "PRODUCT_CONSOLES"
+    },
+    {
+      "id": "PRODUCT_DIFFS",
+      "chapter": "PRODUCT_GROUP",
+      "label": "Разное",
+      "type": "callback",
+      "payload": "PRODUCT_DIFFS"
+    }
+  ],
+  "responses": {
+    "PRODUCT_GROUP": "Выбери группу товаров:",
+    "PRODUCT_APPLE": "Линейка Apple: iPhone, iPad, MacBook, Watch...",
+    "PRODUCT_ANDROIDS": "Android-смартфоны: Samsung, Xiaomi, Pixel...",
+    "PRODUCT_NOTEBOOKS": "Ноутбуки: MacBook, ASUS, Lenovo, HP..."
+  }
+}
