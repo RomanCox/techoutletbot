@@ -4,7 +4,8 @@ import type { Ctx } from '@core/types.js';
 import { errorsMiddleware } from '@middlewares/errors.js';
 import { aclMiddleware } from '@middlewares/acl.js';
 
-export function buildBot({ token, config }: { token: string; config: any }) {
+//TODO delete _config when using config in function
+export function buildBot({ token, config: _config }: { token: string; config: any }) {
     const bot = new Telegraf<Ctx>(token)
 
     // глобальные middlewares

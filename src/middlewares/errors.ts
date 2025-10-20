@@ -32,7 +32,7 @@ export const errorsMiddleware = (): MiddlewareFn<Context> => {
  * Вызывай в точке сборки, если хочешь перехватывать ошибки вне middleware-цепочки.
  */
 export function registerGlobalErrorHandler(bot: import('telegraf').Telegraf) {
-    bot.catch((err, ctx) => {
+    bot.catch((err, _ctx) => {
         console.error('[Telegraf Global Catch]', err)
         // try { ctx.reply('⚠️ Непредвиденная ошибка.') } catch {}
     })
