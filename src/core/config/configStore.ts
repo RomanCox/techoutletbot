@@ -1,14 +1,14 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { access, constants } from 'node:fs';
-import type { BotConfig, Button } from './types.js';
+import type { ConfigData, Button } from '@core/types.js';
 
 const CONFIG_PATH = './config.json';
 
 export class ConfigStore {
-	private data!: BotConfig;
+	private data!: ConfigData;
 	private saving = Promise.resolve();
 
-	async load(): Promise<BotConfig> {
+	async load(): Promise<ConfigData> {
 		// если файла нет — бросим ошибку с подсказкой
 		try {
 			await new Promise<void>((resolve, reject) =>
@@ -25,7 +25,7 @@ export class ConfigStore {
 		return this.data;
 	}
 
-	get(): BotConfig {
+	get(): ConfigData {
 		if (!this.data) throw new Error('Config not loaded');
 		return this.data;
 	}
@@ -42,15 +42,15 @@ export class ConfigStore {
 		return Array.isArray(this.data.superUserIds) && this.data.superUserIds.includes(userId);
 	}
 	isAdmin(userId: number) {
-		return this.isSuper(userId) || (Array.isArray(this.data.admins) && this.data.admins.includes(userId));
+		return this.isSuper(userId) || (Array.isArray(this.data.adminUserIds) && this.data.adminUserIds.includes(userId));
 	}
 	addAdmin(userId: number) {
-		if (!this.data.admins.includes(userId) && !this.isSuper(userId)) {
-			this.data.admins.push(userId);
+		if (!this.data.adminUserIds.includes(userId) && !this.isSuper(userId)) {
+			this.data.adminUserIds.push(userId);
 		}
 	}
 	removeAdmin(userId: number) {
-		this.data.admins = this.data.admins.filter((id) => id !== userId);
+		this.data.adminUserIds = this.data.adminUserIds.filter((id) => id !== userId);
 	}
 
 	// ——— Texts ———

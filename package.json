@@ -5,10 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
+    "start": "node dist/app/index.js",
+    "dev": "tsx --tsconfig-paths src/app/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +19,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.7.0",
+    "tsc-alias": "^1.8.16",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }
