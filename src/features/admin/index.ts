@@ -200,7 +200,7 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
                 // { gid: 67890, title: 'CONSOLES' },
             ]
 
-            const res = await importWorkbookGroups(config, SHEET_ID, SHEETS, 'flat')
+            const res = await importWorkbookGroups(config, SHEET_ID, SHEETS)
 
             await ctx.eReply(
                 `✅ Импорт завершён.
