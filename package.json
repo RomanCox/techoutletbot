@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
     "start": "node dist/app/index.js",
-    "dev": "tsx --tsconfig-paths src/app/index.ts"
+    "dev": "tsx --tsconfig-paths src/app/index.ts",
+    "dev:start": "pnpm build && pnpm start"
   },
   "keywords": [],
   "author": "",

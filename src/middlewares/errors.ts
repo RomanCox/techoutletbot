@@ -1,4 +1,3 @@
-// src/middlewares/errors.ts
 import type { MiddlewareFn } from 'telegraf'
 import type { Context } from 'telegraf'
 
@@ -7,22 +6,16 @@ import type { Context } from 'telegraf'
  * Ловит исключения в любом handler, логирует и не даёт боту “упасть”.
  */
 export const errorsMiddleware = (): MiddlewareFn<Context> => {
-    return async (ctx, next) => {
+    return async (ctx: any, next) => {
         try {
             await next()
-        } catch (err: unknown) {
-            // Лог в консоль — чтобы видеть stack trace в dev/prod
+        } catch (err) {
             console.error('[Telegraf Error]', err)
-
-            // По желанию: тихо уведомим пользователя
-            // (не в инлайне, чтобы не сыпать алертами в группах)
             try {
                 if (ctx?.chat?.type === 'private') {
-                    await ctx.reply('⚠️ Произошла ошибка. Мы уже разбираемся.')
+                    await ctx.eReply?.('⚠️ Произошла ошибка. Мы уже разбираемся.')
                 }
-            } catch {
-                // игнорим вторичную ошибку отправки сообщения
-            }
+            } catch {}
         }
     }
 }

@@ -1,6 +1,5 @@
-// src/core/session/fsm.ts
-import type { AdminSession } from '@core/types.js';
-import { createMemorySession } from './session.js';
+import type { AdminSession } from '@core/types.js'
+import { createMemorySession } from './session.js'
 
 export const adminSessions = createMemorySession<AdminSession>(() => ({ mode: 'IDLE' }))
 

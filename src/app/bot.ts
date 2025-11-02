@@ -1,18 +1,72 @@
-// src/app/bot.ts
-import { Telegraf } from 'telegraf';
-import type { Ctx } from '@core/types.js';
-import { errorsMiddleware } from '@middlewares/errors.js';
-import { aclMiddleware } from '@middlewares/acl.js';
+import { Telegraf, session } from 'telegraf'
+import type { Ctx } from '@core/types.js'
+import type { SessionData } from '@core/ambient/telegraf.d.ts'
+import { errorsMiddleware } from '@middlewares/errors.js'
+import { aclMiddleware } from '@middlewares/acl.js'
+import { callbacksAntiSpam } from '@middlewares/antispam.js'
 
-//TODO delete _config when using config in function
-export function buildBot({ token, config: _config }: { token: string; config: any }) {
+export function buildBot({ token, config }: { token: string; config: any }) {
     const bot = new Telegraf<Ctx>(token)
 
-    // глобальные middlewares
     bot.use(errorsMiddleware())
-    bot.use(aclMiddleware({ onlyPrivate: true })) // применимо к командам, где нужно
 
-    // при желании: bot.use(sessionMiddleware()) — см. раздел 4
+    // ✅ session с кастомным ключом для callback_query
+    const sessionMw = session({
+        getSessionKey: (ctx) => {
+            const fromId = ctx.from?.id
+            const chatId =
+                ctx.chat?.id ??
+                (ctx.callbackQuery as any)?.message?.chat?.id ??
+                (ctx.message as any)?.chat?.id
+            return fromId && chatId ? `${fromId}:${chatId}` : undefined
+        },
+        defaultSession: (): SessionData => ({}),
+    }) as unknown as import('telegraf').Middleware<Ctx> // ← привели тип под твой Ctx
+
+    bot.use(sessionMw)
+
+    // eReply: одно активное сообщение
+    bot.use((ctx, next) => {
+        ctx.config = config
+
+        const origReply = ctx.reply.bind(ctx)
+
+        ctx.eReply = async (text, extra) => {
+            const chatId =
+                ctx.chat?.id ??
+                (ctx.callbackQuery as any)?.message?.chat?.id ??
+                (ctx.message as any)?.chat?.id
+
+            const prevId = ctx.session.activeMessageId
+            if (chatId && prevId) {
+                try { await ctx.telegram.deleteMessage(chatId, prevId) } catch {}
+                ctx.session.activeMessageId = undefined
+            }
+
+            const msg = await origReply(text, extra)
+            ctx.session.activeMessageId = msg.message_id
+            return msg
+        }
+
+        return next()
+    })
+
+    bot.use(aclMiddleware({ onlyPrivate: true }))
+
+    // ✅ антиспам по кликам (подключаем ДО registerFeatures)
+    // bot.use(callbacksAntiSpam({ cooldownMs: 800, enableLock: true }))
+    bot.use(
+        callbacksAntiSpam({
+            cooldownMs: 800,
+            enableLock: true,
+            whitelistPayloads: [
+                'MAIN',
+                'ADMIN',
+                'ADM_BACK_TO_MAIN',
+                'ADM_IMPORT_ALL_SHEETS',
+            ],
+        })
+    )
 
     return bot
 }

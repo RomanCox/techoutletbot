@@ -1,10 +1,9 @@
-// src/app/index.ts
-import 'dotenv/config';
-import { buildBot } from './bot.js';
-import { ConfigStore } from '../core/config/configStore.js';
-import { registerMenu } from '../features/menu/index.js';
-import { registerAdmin } from '../features/admin/index.js';
-import { registerResponses } from '../features/responses/index.js';
+import 'dotenv/config'
+import { buildBot } from './bot.js'
+import { ConfigStore } from '../core/config/configStore.js'
+import { registerMenu } from '../features/menu/index.js'
+import { registerAdmin } from '../features/admin/index.js'
+import { registerResponses } from '../features/responses/index.js'
 
 async function main() {
     const config = new ConfigStore()

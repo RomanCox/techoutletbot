@@ -1,11 +1,20 @@
-// src/core/types.ts
-import type { Context } from 'telegraf';
+import type { Context } from 'telegraf'
+import type { ConfigStore } from '@core/config/configStore.js'
+import type { SessionData } from '@core/ambient/telegraf.js'
 
 /**
  * Базовый контекст Telegraf.
  * Если позже добавишь свои поля (например, session), расширишь тут.
  */
 export type Ctx = Context
+
+declare module 'telegraf' {
+    interface Context {
+        session: SessionData
+        config: ConfigStore
+        eReply: (text: string, extra?: Parameters<Context['reply']>[1]) => Promise<import('telegraf/types').Message.TextMessage>
+    }
+}
 
 /** Глава (раздел) меню. Резервируем MAIN, остальные — любые строки. */
 export type Chapter = 'MAIN' | string
@@ -18,29 +27,34 @@ export interface ButtonBase {
     id: string
     label: string
     chapter: Chapter
+    memory?: string
+    price?: string
 }
 
 export interface ButtonCallback extends ButtonBase {
     type: 'callback'
-    payload: string // может совпадать с названием chapter для перехода в раздел
+    payload: string
 }
 
 export interface ButtonUrl extends ButtonBase {
     type: 'url'
     url: string
+    /** опционально: текст, которым нужно предзаполнить сообщение менеджеру */
+    prefillText?: string
 }
 
 export type Button = ButtonCallback | ButtonUrl
 
 /** Конфигурация бота, которую хранит ConfigStore */
 export interface ConfigData {
+    superUserIds: number[]
+    adminUserIds: number[]
     texts: {
         welcome: string
     }
     buttons: Button[]
     responses: Record<string, string>
-    adminUserIds: number[]
-    superUserIds: number[]
+    parents?: Record<string, string>
 }
 
 /** Интерфейс хранилища конфигурации */
@@ -70,6 +84,8 @@ export type AdminMode =
     | 'EDIT_BTN__ASK_VALUE'
     | 'SET_WELCOME__ASK_TEXT'
     | 'SET_RESPONSE__ASK_BOTH'
+    | 'ADD_ADMIN__ASK_ID'
+    | 'DEL_ADMIN__ASK_ID'
 
 /** Сессия администратора (FSM состояние) */
 export interface AdminSession {

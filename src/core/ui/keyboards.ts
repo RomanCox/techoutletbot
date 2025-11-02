@@ -1,36 +1,68 @@
-// src/core/ui/keyboards.ts
-import { Markup } from 'telegraf';
-import type { Ctx } from '@core/types.js';
+import { Markup } from 'telegraf'
+import type { Ctx, Button } from '@core/types.js'
+import { formatMemory, formatPrice, toCapitalize } from '@core/utils/format.js'
 
+// ⚙️ Админ-панель
 export function adminMenuKeyboard() {
     return Markup.inlineKeyboard([
+        [Markup.button.callback('🔄 Импорт данных (все листы)', 'ADM_IMPORT_ALL_SHEETS')],
         [Markup.button.callback('➕ Добавить кнопку', 'ADM_ADD_BTN')],
         [Markup.button.callback('📝 Редактировать кнопку', 'ADM_EDIT_BTN')],
         [Markup.button.callback('🗑 Удалить кнопку', 'ADM_DEL_BTN')],
         [Markup.button.callback('📋 Список кнопок', 'ADM_LIST_BTNS')],
         [Markup.button.callback('💬 Изменить приветствие', 'ADM_SET_WELCOME')],
         [Markup.button.callback('💡 Изменить ответ payload', 'ADM_SET_RESPONSE')],
+        [Markup.button.callback('👤➕ Добавить админа', 'ADM_ADD_ADMIN')],
+        [Markup.button.callback('👤➖ Удалить админа', 'ADM_DEL_ADMIN')],
         [Markup.button.callback('⬅️ В главное меню', 'ADM_BACK_TO_MAIN')],
     ])
 }
 
 export function buildKeyboard(ctx: Ctx | undefined, chapter: string, config: any) {
-    const rows = config.get().buttons
-        .filter((b: any) => b.chapter === chapter)
-        .map((b: any) =>
-            b.type === 'callback'
-                ? [Markup.button.callback(b.label, b.payload)]
-                : [Markup.button.url(b.label, b.url)]
-        )
+    const rows = (config.get().buttons as Button[])
+        .filter((b) => b.chapter === chapter && b.chapter !== '_HIDDEN')
+        .map((b) => {
+            if (b.type === 'callback') {
+                // ── динамический текст для карточек товара
+                const isItem = typeof b.payload === 'string' && b.payload.startsWith('ITEM:')
+                const hasMeta = !!(b.memory || b.price)
 
-    // ↩️ «Назад в главное меню» — во всех разделах, кроме MAIN
+                const text = (isItem || hasMeta)
+                    ? [
+                        b.label,
+                        b.memory ? formatMemory(b.memory) : undefined,
+                        b.price  ? `— от ${formatPrice(b.price)}` : undefined,
+                    ].filter(Boolean).join(' ')
+                    : b.label
+
+                return [Markup.button.callback(text, b.payload)]
+            } else {
+                const deep = buildDeepLink(b.url, b.prefillText)
+                return [Markup.button.url(b.label, deep)]
+            }
+        })
+
+    // ↩️ «В главное меню» — во всех разделах, кроме MAIN
     if (chapter !== 'MAIN') {
-        rows.push([Markup.button.callback('⬅️ Назад в главное меню', 'MAIN')])
+        const parents: Record<string, string> = config.get().parents || {}
+
+        // если родитель не задан, считаем, что родитель = MAIN (это вернёт поведение для PRODUCT_GROUP)
+        const parent = parents[chapter] || 'MAIN'
+
+        const isFirstLevel = parent === 'MAIN' // т.е. мы на первом уровне под MAIN (например, PRODUCT_GROUP → APPLE = false; PRODUCT_GROUP сам → true)
+
+        // Показываем «⬅️ Назад» ТОЛЬКО если это не первый уровень
+        if (!isFirstLevel) {
+            rows.push([Markup.button.callback('⬅️ Назад', parent)])
+        }
+
+        // «⬅️ В главное меню» показываем всегда (кроме MAIN)
+        rows.push([Markup.button.callback('⬅️ В главное меню', 'MAIN')])
     }
 
     // ⚙️ Admin Panel — ТОЛЬКО в главном меню
     if (
-        chapter === 'MAIN' &&                     // ← ключевая правка
+        chapter === 'MAIN' &&
         ctx &&
         ctx.chat?.type === 'private' &&
         ctx.from?.id &&
@@ -42,3 +74,26 @@ export function buildKeyboard(ctx: Ctx | undefined, chapter: string, config: any
     return Markup.inlineKeyboard(rows)
 }
 
+export function buildDeepLink(baseUrl: string, prefill?: string) {
+    if (!prefill) return baseUrl
+
+    // Нормализация: https://t.me/@user → https://t.me/user
+    const raw = baseUrl.replace('https://t.me/@', 'https://t.me/')
+    const encodedText = encodeURIComponent(prefill)
+
+    try {
+        const u = new URL(raw)
+        // Если это ссылка вида https://t.me/<username|bot> — используем ?text=...
+        if (u.hostname === 't.me' && u.pathname && u.pathname !== '/share/url') {
+            // Собираем query вручную, чтобы пробелы были %20, а не +
+            const base = `${u.origin}${u.pathname}`
+            return `${base}?text=${encodedText}`
+        }
+    } catch {
+        // ignore and fallback below
+    }
+
+    // Fallback: универсальный шэрер
+    const encodedUrl = encodeURIComponent(raw)
+    return `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`
+}

@@ -1,79 +1,80 @@
-import { readFile, writeFile } from 'node:fs/promises';
-import { access, constants } from 'node:fs';
-import type { ConfigData, Button } from '@core/types.js';
-
-const CONFIG_PATH = './config.json';
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import type { ConfigData, Button } from '@core/types.js'
 
 export class ConfigStore {
-	private data!: ConfigData;
-	private saving = Promise.resolve();
+    private filePath: string
+    private data: ConfigData
 
-	async load(): Promise<ConfigData> {
-		// если файла нет — бросим ошибку с подсказкой
-		try {
-			await new Promise<void>((resolve, reject) =>
-				access(CONFIG_PATH, constants.F_OK, (err) => (err ? reject(err) : resolve()))
-			);
-		} catch {
-			throw new Error(
-				`Файл ${CONFIG_PATH} не найден. Создайте его по образцу из инструкции.`
-			);
-		}
+    constructor(filePath = path.resolve(process.cwd(), 'config.json')) {
+        this.filePath = filePath
+        this.data = {
+            superUserIds: [],
+            adminUserIds: [],
+            texts: {
+                welcome: 'Привет! Я помогу с выбором товаров и связью с менеджером',
+            },
+            buttons: [],
+            responses: {},
+        }
+    }
 
-		const raw = await readFile(CONFIG_PATH, 'utf-8');
-		this.data = JSON.parse(raw);
-		return this.data;
-	}
+    /** Загружаем конфиг из файла */
+    async load() {
+        try {
+            const raw = await fs.readFile(this.filePath, 'utf8')
+            this.data = JSON.parse(raw) as ConfigData
+        } catch (err) {
+            console.warn('[ConfigStore] config.json не найден — создаём дефолтный')
+            await this.save()
+        }
+    }
 
-	get(): ConfigData {
-		if (!this.data) throw new Error('Config not loaded');
-		return this.data;
-	}
+    /** Сохраняем конфиг в файл */
+    async save() {
+        await fs.writeFile(this.filePath, JSON.stringify(this.data, null, 2), 'utf8')
+    }
 
-	async save(): Promise<void> {
-		const json = JSON.stringify(this.data, null, 2);
-		// простая последовательная запись (на случай частых апдейтов)
-		this.saving = this.saving.then(() => writeFile(CONFIG_PATH, json, 'utf-8'));
-		await this.saving;
-	}
+    /** Возвращаем текущие данные */
+    get() {
+        return this.data
+    }
 
-	// ——— Rights management utilities ———
-	isSuper(userId: number) {
-		return Array.isArray(this.data.superUserIds) && this.data.superUserIds.includes(userId);
-	}
-	isAdmin(userId: number) {
-		return this.isSuper(userId) || (Array.isArray(this.data.adminUserIds) && this.data.adminUserIds.includes(userId));
-	}
-	addAdmin(userId: number) {
-		if (!this.data.adminUserIds.includes(userId) && !this.isSuper(userId)) {
-			this.data.adminUserIds.push(userId);
-		}
-	}
-	removeAdmin(userId: number) {
-		this.data.adminUserIds = this.data.adminUserIds.filter((id) => id !== userId);
-	}
+    /** Проверка прав */
+    isSuper(userId: number) {
+        return (
+            Array.isArray(this.data.superUserIds) &&
+            this.data.superUserIds.includes(userId)
+        )
+    }
 
-	// ——— Texts ———
-	setWelcome(text: string) {
-		this.data.texts.welcome = text;
-	}
-	setResponse(payload: string, text: string) {
-		this.data.responses[payload] = text;
-	}
+    isAdmin(userId: number) {
+        return (
+            this.isSuper(userId) ||
+            (Array.isArray(this.data.adminUserIds) &&
+                this.data.adminUserIds.includes(userId))
+        )
+    }
 
-	// ——— Buttons ———
-	addButton(button: Button) {
-		if (this.data.buttons.some((b) => b.id === button.id)) {
-			throw new Error(`Кнопка с id "${button.id}" уже существует`);
-		}
-		this.data.buttons.push(button);
-	}
-	removeButton(id: string) {
-		this.data.buttons = this.data.buttons.filter((b) => b.id !== id);
-	}
-	renameButton(id: string, newLabel: string) {
-		const btn = this.data.buttons.find((b) => b.id === id);
-		if (!btn) throw new Error(`Кнопка "${id}" не найдена`);
-		btn.label = newLabel;
-	}
+    /** Добавление/удаление админов */
+    addAdmin(userId: number) {
+        if (!this.data.adminUserIds.includes(userId) && !this.isSuper(userId)) {
+            this.data.adminUserIds.push(userId)
+        }
+    }
+
+    removeAdmin(userId: number) {
+        this.data.adminUserIds = this.data.adminUserIds.filter((id) => id !== userId)
+    }
+
+    /** Работа с кнопками */
+    addButton(btn: Button) {
+        const idx = this.data.buttons.findIndex((b) => b.id === btn.id)
+        if (idx !== -1) this.data.buttons[idx] = btn
+        else this.data.buttons.push(btn)
+    }
+
+    removeButton(id: string) {
+        this.data.buttons = this.data.buttons.filter((b) => b.id !== id)
+    }
 }

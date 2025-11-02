@@ -1,6 +1,11 @@
 {
-  "superUserIds": [349107025, 256626302],
-  "admins": [],
+  "superUserIds": [
+    349107025,
+    256626302
+  ],
+  "adminUserIds": [
+    757881190
+  ],
   "texts": {
     "welcome": "Привет! Я помогу с выбором товаров и связью с менеджером"
   },
@@ -17,62 +22,310 @@
       "chapter": "MAIN",
       "label": "👤 Связаться с менеджером",
       "type": "url",
-      "url": "https://t.me/annacoxy"
+      "url": "https://t.me/FBImen",
+      "prefillText": "Здравствуйте! Нужна консультация по"
     },
     {
-      "id": "PRODUCT_APPLE",
-      "chapter": "PRODUCT_GROUP",
-      "label": "Apple",
-      "type": "callback",
-      "payload": "PRODUCT_APPLE"
+      "id": "CHOOSE_COLOR_AND_BUY",
+      "chapter": "_HIDDEN",
+      "label": "💸 Выбрать цвет и купить",
+      "type": "url",
+      "url": "https://t.me/FBImen",
+      "prefillText": "Здравствуйте! Хочу купить"
     },
     {
-      "id": "PRODUCT_ANDROIDS",
+      "id": "GROUP_APPLE",
       "chapter": "PRODUCT_GROUP",
-      "label": "Android телефоны",
+      "label": "🗂 Apple",
       "type": "callback",
-      "payload": "PRODUCT_GROUP"
+      "payload": "APPLE"
     },
     {
-      "id": "PRODUCT_NOTEBOOKS",
-      "chapter": "PRODUCT_GROUP",
-      "label": "Ноутбуки",
+      "id": "CAT_APPLE_IPHONES",
+      "chapter": "APPLE",
+      "label": "📱 iPhones",
       "type": "callback",
-      "payload": "PRODUCT_GROUP"
+      "payload": "IPHONES"
     },
     {
-      "id": "PRODUCT_WIFI",
-      "chapter": "PRODUCT_GROUP",
-      "label": "Wi-Fi системы, усилители",
+      "id": "CAT_APPLE_AIRPODS",
+      "chapter": "APPLE",
+      "label": "🎧 AirPods",
       "type": "callback",
-      "payload": "PRODUCT_WIFI"
+      "payload": "AIRPODS"
     },
     {
-      "id": "PRODUCT_CAMERAS",
-      "chapter": "PRODUCT_GROUP",
-      "label": "Камеры и аксессуары",
+      "id": "IPHONES_IPHONE_16E_128",
+      "chapter": "IPHONES",
+      "label": "iPhone 16E",
+      "memory": "128",
+      "price": "580",
       "type": "callback",
-      "payload": "PRODUCT_CAMERAS"
+      "payload": "ITEM:IPHONES_IPHONE_16E_128"
     },
     {
-      "id": "PRODUCT_CONSOLES",
-      "chapter": "PRODUCT_GROUP",
-      "label": "Игровые консоли и аксессуары",
+      "id": "IPHONES_IPHONE_16E_256",
+      "chapter": "IPHONES",
+      "label": "iPhone 16E",
+      "memory": "256",
+      "price": "740",
       "type": "callback",
-      "payload": "PRODUCT_CONSOLES"
+      "payload": "ITEM:IPHONES_IPHONE_16E_256"
     },
     {
-      "id": "PRODUCT_DIFFS",
-      "chapter": "PRODUCT_GROUP",
-      "label": "Разное",
+      "id": "IPHONES_IPHONE_16_128",
+      "chapter": "IPHONES",
+      "label": "iPhone 16",
+      "memory": "128",
+      "price": "740",
       "type": "callback",
-      "payload": "PRODUCT_DIFFS"
+      "payload": "ITEM:IPHONES_IPHONE_16_128"
+    },
+    {
+      "id": "IPHONES_IPHONE_16_156",
+      "chapter": "IPHONES",
+      "label": "Iphone 16",
+      "memory": "156",
+      "price": "840",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_16_156"
+    },
+    {
+      "id": "IPHONES_IPHONE_16_PLUS_128",
+      "chapter": "IPHONES",
+      "label": "iPhone 16 Plus",
+      "memory": "128",
+      "price": "750",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_16_PLUS_128"
+    },
+    {
+      "id": "IPHONES_IPHONE_16_PLUS_256",
+      "chapter": "IPHONES",
+      "label": "iPhone 16 Plus",
+      "memory": "256",
+      "price": "1000",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_16_PLUS_256"
+    },
+    {
+      "id": "IPHONES_IPHONE_16_PRO_128",
+      "chapter": "IPHONES",
+      "label": "iPhone 16 Pro",
+      "memory": "128",
+      "price": "1100",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_16_PRO_128"
+    },
+    {
+      "id": "IPHONES_IPHONE_16_PRO_256",
+      "chapter": "IPHONES",
+      "label": "iPhone 16 Pro",
+      "memory": "256",
+      "price": "1270",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_16_PRO_256"
+    },
+    {
+      "id": "IPHONES_IPHONE_16_PRO_512",
+      "chapter": "IPHONES",
+      "label": "iPhone 16 Pro",
+      "memory": "512",
+      "price": "1480",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_16_PRO_512"
+    },
+    {
+      "id": "IPHONES_IPHONE_16_PRO_1024",
+      "chapter": "IPHONES",
+      "label": "iPhone 16 Pro",
+      "memory": "1024",
+      "price": "1700",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_16_PRO_1024"
+    },
+    {
+      "id": "IPHONES_IPHONE_16_PRO_MAX_256",
+      "chapter": "IPHONES",
+      "label": "iPhone 16 Pro Max",
+      "memory": "256",
+      "price": "1300",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_16_PRO_MAX_256"
+    },
+    {
+      "id": "IPHONES_IPHONE_16_PRO_MAX_512",
+      "chapter": "IPHONES",
+      "label": "iPhone 16 Pro Max",
+      "memory": "512",
+      "price": "1500",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_16_PRO_MAX_512"
+    },
+    {
+      "id": "IPHONES_IPHONE_16_PRO_MAX_1024",
+      "chapter": "IPHONES",
+      "label": "iPhone 16 Pro Max",
+      "memory": "1024",
+      "price": "1900",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_16_PRO_MAX_1024"
+    },
+    {
+      "id": "IPHONES_IPHONE_AIR_256",
+      "chapter": "IPHONES",
+      "label": "iPhone Air",
+      "memory": "256",
+      "price": "990",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_AIR_256"
+    },
+    {
+      "id": "IPHONES_IPHONE_AIR_512",
+      "chapter": "IPHONES",
+      "label": "iPhone Air",
+      "memory": "512",
+      "price": "1200",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_AIR_512"
+    },
+    {
+      "id": "IPHONES_IPHONE_AIR_1024",
+      "chapter": "IPHONES",
+      "label": "iPhone Air",
+      "memory": "1024",
+      "price": "1400",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_AIR_1024"
+    },
+    {
+      "id": "IPHONES_IPHONE_17_256",
+      "chapter": "IPHONES",
+      "label": "iPhone 17",
+      "memory": "256",
+      "price": "980",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_17_256"
+    },
+    {
+      "id": "IPHONES_IPHONE_17_512",
+      "chapter": "IPHONES",
+      "label": "iPhone 17",
+      "memory": "512",
+      "price": "1260",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_17_512"
+    },
+    {
+      "id": "IPHONES_IPHONE_17_PRO_256",
+      "chapter": "IPHONES",
+      "label": "iPhone 17 Pro",
+      "memory": "256",
+      "price": "1290",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_17_PRO_256"
+    },
+    {
+      "id": "IPHONES_IPHONE_17_PRO_512",
+      "chapter": "IPHONES",
+      "label": "iPhone 17 Pro",
+      "memory": "512",
+      "price": "1620",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_17_PRO_512"
+    },
+    {
+      "id": "IPHONES_IPHONE_17_PRO_1024",
+      "chapter": "IPHONES",
+      "label": "iPhone 17 Pro",
+      "memory": "1024",
+      "price": "1770",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_17_PRO_1024"
+    },
+    {
+      "id": "IPHONES_IPHONE_17_PRO_MAX_256",
+      "chapter": "IPHONES",
+      "label": "iPhone 17 Pro Max",
+      "memory": "256",
+      "price": "1450",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_17_PRO_MAX_256"
+    },
+    {
+      "id": "IPHONES_IPHONE_17_PRO_MAX_512",
+      "chapter": "IPHONES",
+      "label": "iPhone 17 Pro Max",
+      "memory": "512",
+      "price": "1720",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_17_PRO_MAX_512"
+    },
+    {
+      "id": "IPHONES_IPHONE_17_PRO_MAX_1024",
+      "chapter": "IPHONES",
+      "label": "iPhone 17 Pro Max",
+      "memory": "1024",
+      "price": "1950",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_17_PRO_MAX_1024"
+    },
+    {
+      "id": "IPHONES_IPHONE_17_PRO_MAX_2048",
+      "chapter": "IPHONES",
+      "label": "iPhone 17 Pro Max",
+      "memory": "2048",
+      "price": "2210",
+      "type": "callback",
+      "payload": "ITEM:IPHONES_IPHONE_17_PRO_MAX_2048"
+    },
+    {
+      "id": "AIRPODS_AIRPODS_PRO_3",
+      "chapter": "AIRPODS",
+      "label": "AirPods Pro 3",
+      "price": "380",
+      "type": "callback",
+      "payload": "ITEM:AIRPODS_AIRPODS_PRO_3"
+    },
+    {
+      "id": "AIRPODS_AIRPODS_PRO_2_TYPE-C",
+      "chapter": "AIRPODS",
+      "label": "AirPods Pro 2 Type-C",
+      "price": "240",
+      "type": "callback",
+      "payload": "ITEM:AIRPODS_AIRPODS_PRO_2_TYPE-C"
+    },
+    {
+      "id": "AIRPODS_AIRPODS_4",
+      "chapter": "AIRPODS",
+      "label": "AirPods 4",
+      "price": "160",
+      "type": "callback",
+      "payload": "ITEM:AIRPODS_AIRPODS_4"
+    },
+    {
+      "id": "AIRPODS_AIRPODS_4_ANC",
+      "chapter": "AIRPODS",
+      "label": "AirPods 4 ANC",
+      "price": "210",
+      "type": "callback",
+      "payload": "ITEM:AIRPODS_AIRPODS_4_ANC"
+    },
+    {
+      "id": "AIRPODS_AIRPODS_MAX_TYPE-C",
+      "chapter": "AIRPODS",
+      "label": "AirPods Max Type-C",
+      "price": "580",
+      "type": "callback",
+      "payload": "ITEM:AIRPODS_AIRPODS_MAX_TYPE-C"
     }
   ],
   "responses": {
-    "PRODUCT_GROUP": "Выбери группу товаров:",
-    "PRODUCT_APPLE": "Линейка Apple: iPhone, iPad, MacBook, Watch...",
-    "PRODUCT_ANDROIDS": "Android-смартфоны: Samsung, Xiaomi, Pixel...",
-    "PRODUCT_NOTEBOOKS": "Ноутбуки: MacBook, ASUS, Lenovo, HP..."
+    "PRODUCT_GROUP": "Выбери группу товаров:"
+  },
+  "parents": {
+    "APPLE": "PRODUCT_GROUP",
+    "IPHONES": "APPLE",
+    "AIRPODS": "APPLE"
   }
 }
