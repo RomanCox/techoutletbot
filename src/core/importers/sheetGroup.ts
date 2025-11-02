@@ -2,14 +2,12 @@ import type { Button } from '@core/types.js'
 import { loadIphonesFromSheet } from '@core/sheets.js'
 import { toCapitalize, toCode } from '@core/utils/format.js'
 
-type ImportMode = 'flat' | 'byProduct'
 type SheetSpec = { gid: number | string; title?: string }
 
 type SheetGroupOpts = {
     sheetId: string
     gid: number | string
     groupTitle?: string
-    mode?: ImportMode
 }
 
 function productLabel(product: string): string {
@@ -29,7 +27,7 @@ function productLabel(product: string): string {
 
 /** Импорт одного листа как группу товаров */
 export async function importSheetAsGroup(config: any, opts: SheetGroupOpts) {
-    const { sheetId, gid, mode = 'flat' } = opts
+    const { sheetId, gid } = opts
     const items = await loadIphonesFromSheet(sheetId, gid)
     if (!items.length) return { added: 0, updated: 0, groupsAdded: 0, chaptersAdded: 0 }
 
@@ -115,8 +113,7 @@ export async function importSheetAsGroup(config: any, opts: SheetGroupOpts) {
 export async function importWorkbookGroups(
     config: any,
     sheetId: string,
-    sheets: SheetSpec[],
-    mode: ImportMode = 'flat'
+    sheets: SheetSpec[]
 ) {
     let total = { added: 0, updated: 0, groupsAdded: 0, chaptersAdded: 0 }
     for (const s of sheets) {
@@ -124,7 +121,6 @@ export async function importWorkbookGroups(
             sheetId,
             gid: s.gid,
             groupTitle: s.title,
-            mode,
         })
         total.added += r.added
         total.updated += r.updated

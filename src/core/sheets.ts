@@ -18,8 +18,7 @@ function gvizTsvUrl(sheetId: string, gid: number | string = 0) {
 }
 
 function cleanText(s: string): string {
-    // убираем BOM и мусорные префиксы
-    return s.replace(/^\uFEFF/, '').replace(/^\)\]\}'\s*\n?/, '').trim()
+    return s.replace(/^\uFEFF/, '').replace(/^\)]}'\s*\n?/, '').trim()
 }
 
 function parseTsv(tsv: string): Row[] {
@@ -107,7 +106,6 @@ export async function loadIphonesFromSheet(
             }
         } catch (e) {
             console.log(`[sheets] ${a.kind} failed:`, (e as Error).message)
-            continue
         }
     }
 
@@ -119,7 +117,7 @@ export async function loadIphonesFromSheet(
     const memoryKey  = resolveColumnKey(headers, ['memory', 'память']) ?? 'memory'
     const priceKey   = resolveColumnKey(headers, ['price', 'стоимость', 'цена']) ?? 'price'
 
-    const items: IphoneItem[] = rows
+    return rows
         .map((r) => {
             const product = (r[productKey] ?? '').trim()
             const name    = (r[nameKey]    ?? '').trim()
@@ -127,7 +125,5 @@ export async function loadIphonesFromSheet(
             const price   = toNumber(r[priceKey]) ?? 0
             return { product, name, memory, price }
         })
-        .filter(x => x.product || x.name) // оставляем строки с названием/товаром
-
-    return items
+        .filter(x => x.product || x.name)
 }

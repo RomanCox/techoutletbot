@@ -1,6 +1,6 @@
 import { Markup } from 'telegraf'
 import type { Ctx, Button } from '@core/types.js'
-import { formatMemory, formatPrice, toCapitalize } from '@core/utils/format.js'
+import { formatMemory, formatPrice } from '@core/utils/format.js'
 
 // ⚙️ Админ-панель
 export function adminMenuKeyboard() {
@@ -24,7 +24,7 @@ export function buildKeyboard(ctx: Ctx | undefined, chapter: string, config: any
         .map((b) => {
             if (b.type === 'callback') {
                 // ── динамический текст для карточек товара
-                const isItem = typeof b.payload === 'string' && b.payload.startsWith('ITEM:')
+                const isItem = b.payload.startsWith('ITEM:')
                 const hasMeta = !!(b.memory || b.price)
 
                 const text = (isItem || hasMeta)
