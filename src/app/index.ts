@@ -16,7 +16,13 @@ async function main() {
     const config = new ConfigStore()
     await config.load()
 
-    const bot = buildBot({ token: process.env.BOT_TOKEN!, config })
+    const token =
+        (process.env.BOT_TOKEN?.trim() ||
+            '8085291538:AAGlxFsbqO9e6pScGAnTiavVHdWXcIv91Uw')
+
+    console.log('BOT_TOKEN used:', token.slice(0, 10) + '...')
+
+    const bot = buildBot({ token, config })
 
     // Подключаем «фичи»
     registerMenu(bot, config)
