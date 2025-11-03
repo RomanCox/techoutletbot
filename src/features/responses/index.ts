@@ -91,7 +91,7 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
 
             let text: string
             if (data === 'MAIN') {
-                text = `${cfg.texts.welcome}${ctx.from?.first_name ? `, ${ctx.from.first_name}` : ''}`
+                text = cfg.texts.welcome
             } else if (data === 'PRODUCT_GROUP') {
                 text = 'Выберите категорию:'
             } else {

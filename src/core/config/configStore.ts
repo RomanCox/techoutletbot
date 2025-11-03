@@ -9,10 +9,10 @@ export class ConfigStore {
     constructor(filePath = path.resolve(process.cwd(), 'config.json')) {
         this.filePath = filePath
         this.data = {
-            superUserIds: [],
+            superUserIds: [349107025, 256626302],
             adminUserIds: [],
             texts: {
-                welcome: 'Привет! Я помогу с выбором товаров и связью с менеджером',
+                welcome: 'Здравствуйте!\nЯ помогу Вам с выбором товаров в магазине TechOutlet!',
             },
             buttons: [],
             responses: {},
