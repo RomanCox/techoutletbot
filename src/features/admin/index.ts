@@ -225,7 +225,7 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
         resetAdminSession(uid)
 
         const cfg = config.get()
-        const text = `${cfg.texts.welcome}${ctx.from?.first_name ? `, ${ctx.from.first_name}` : ''}`
+        const text = cfg.texts.welcome
         const kb = buildKeyboard(ctx, 'MAIN', config)
 
         // ВАЖНО: именно форс-замена (НЕ ctx.reply, НЕ show)
