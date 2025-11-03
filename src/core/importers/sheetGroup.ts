@@ -22,7 +22,7 @@ export async function importWorkbookGroups(
     const defaultMainButtons: Button[] = [
         { id: 'PRODUCT_GROUP', chapter: 'MAIN', label: '🛍 Группа товаров', type: 'callback', payload: 'PRODUCT_GROUP' },
         { id: 'CONTACT_MANAGER', chapter: 'MAIN', label: '👤 Связаться с менеджером', type: 'url', url: 'https://t.me/FBImen', prefillText: 'Здравствуйте! Нужна консультация по ' } as any,
-        { id: 'CHOOSE_COLOR_AND_BUY', chapter: '_HIDDEN', label: '💸 Выбрать цвет и купить', type: 'url', url: 'https://t.me/FBImen', prefillText: 'Здравствуйте! Хочу купить' } as any,
+        { id: 'ORDER', chapter: '_HIDDEN', label: '💸 Выбрать цвет и заказать', type: 'url', url: 'https://t.me/FBImen', prefillText: 'Здравствуйте! Хочу заказать' } as any,
     ]
 
     const buttons: Button[] = [...defaultMainButtons]
