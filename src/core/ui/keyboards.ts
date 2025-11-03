@@ -2,7 +2,6 @@ import { Markup } from 'telegraf'
 import type { Ctx, Button } from '@core/types.js'
 import { renderItemLabel } from '@core/utils/helper.js'
 
-// ⚙️ Админ-панель
 export function adminMenuKeyboard() {
     return Markup.inlineKeyboard([
         [Markup.button.callback('🔄 Импорт данных (все листы)', 'ADM_IMPORT_ALL_SHEETS')],
@@ -25,34 +24,31 @@ export function buildKeyboard(ctx: Ctx | undefined, chapter: string, config: any
             if (b.type === 'callback') {
                 const text =
                     b.payload.startsWith('ITEM:')
-                        ? renderItemLabel(b)          // <-- товары форматируем аккуратно
-                        : b.label                     // категории/меню показываем как есть
+                        ? renderItemLabel(b)
+                        : b.label
 
                 return [Markup.button.callback(text, b.payload as string)]
             } else {
-                return [Markup.button.url(b.label, b.url)]
+                // return [Markup.button.url(b.label, b.url)]
+                const deep = buildDeepLink(b.url, b.prefillText)
+                return [Markup.button.url(b.label, deep)]
             }
         })
 
-    // ↩️ «В главное меню» — во всех разделах, кроме MAIN
     if (chapter !== 'MAIN') {
         const parents: Record<string, string> = config.get().parents || {}
 
-        // если родитель не задан, считаем, что родитель = MAIN (это вернёт поведение для PRODUCT_GROUP)
         const parent = parents[chapter] || 'MAIN'
 
-        const isFirstLevel = parent === 'MAIN' // т.е. мы на первом уровне под MAIN (например, PRODUCT_GROUP → APPLE = false; PRODUCT_GROUP сам → true)
+        const isFirstLevel = parent === 'MAIN'
 
-        // Показываем «⬅️ Назад» ТОЛЬКО если это не первый уровень
         if (!isFirstLevel) {
             rows.push([Markup.button.callback('⬅️ Назад', parent)])
         }
 
-        // «⬅️ В главное меню» показываем всегда (кроме MAIN)
         rows.push([Markup.button.callback('⬅️ В главное меню', 'MAIN')])
     }
 
-    // ⚙️ Admin Panel — ТОЛЬКО в главном меню
     if (
         chapter === 'MAIN' &&
         ctx &&
@@ -69,23 +65,18 @@ export function buildKeyboard(ctx: Ctx | undefined, chapter: string, config: any
 export function buildDeepLink(baseUrl: string, prefill?: string) {
     if (!prefill) return baseUrl
 
-    // Нормализация: https://t.me/@user → https://t.me/user
     const raw = baseUrl.replace('https://t.me/@', 'https://t.me/')
     const encodedText = encodeURIComponent(prefill)
 
     try {
         const u = new URL(raw)
-        // Если это ссылка вида https://t.me/<username|bot> — используем ?text=...
         if (u.hostname === 't.me' && u.pathname && u.pathname !== '/share/url') {
-            // Собираем query вручную, чтобы пробелы были %20, а не +
             const base = `${u.origin}${u.pathname}`
             return `${base}?text=${encodedText}`
         }
     } catch {
-        // ignore and fallback below
     }
 
-    // Fallback: универсальный шэрер
     const encodedUrl = encodeURIComponent(raw)
     return `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`
 }
