@@ -24,7 +24,7 @@ export function buildKeyboard(ctx: Ctx | undefined, chapter: string, config: any
         .map((b) => {
             if (b.type === 'callback') {
                 const text =
-                    typeof b.payload === 'string' && b.payload.startsWith('ITEM:')
+                    b.payload.startsWith('ITEM:')
                         ? renderItemLabel(b)          // <-- товары форматируем аккуратно
                         : b.label                     // категории/меню показываем как есть
 

@@ -1,5 +1,5 @@
 import type { Button } from '@core/types.js'
-import { formatPrice, formatMemory } from '@core/utils/format.js'
+import { formatPrice } from '@core/utils/format.js'
 
 export function num(v: unknown): number | undefined {
     if (v == null) return undefined
