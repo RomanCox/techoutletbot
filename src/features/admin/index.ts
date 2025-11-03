@@ -191,16 +191,13 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
         await ctx.answerCbQuery()
 
         try {
-            const SHEET_ID = '1_lH4wr7BrgYxHS3e3wNJLAby28diEkTr84Lx_I5823M'
-
-            // Сейчас у тебя один лист. Когда появятся новые — просто добавь ещё объекты.
             const SHEETS = [
-                { gid: 0, title: 'APPLE' },
+                { gid: process.env.APPLE_SHEET_GID!, title: process.env.APPLE_SHEET_LABEL! },
                 // { gid: 12345, title: 'ANDROID' },
                 // { gid: 67890, title: 'CONSOLES' },
             ]
 
-            const res = await importWorkbookGroups(config, SHEET_ID, SHEETS)
+            const res = await importWorkbookGroups(config, process.env.GOOGLE_SHEET_ID!, SHEETS)
 
             await ctx.eReply(
                 `✅ Импорт завершён.
@@ -212,7 +209,8 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
             )
         } catch (e) {
             console.error('[ADM_IMPORT_ALL_SHEETS]', e)
-            await ctx.eReply('⚠️ Ошибка импорта. Проверь доступ и формат таблицы.', {
+            const msg = e instanceof Error ? e.message : String(e)
+            await ctx.eReply(`⚠️ Ошибка импорта: ${msg}`, {
                 reply_markup: (adminMenuKeyboard() as any).reply_markup,
             })
         }

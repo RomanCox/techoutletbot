@@ -24,6 +24,18 @@ export const formatPrice = (v?: string | number) => {
 
 export const formatMemory = (v?: string) => {
     if (!v) return '—'
+    if (v === '0' ) return
     const s = v.trim().replace(/\s*gb$/i, '')
     return `${s} GB`
+}
+
+export function prettyProductLabel(key: string): string {
+    switch (key) {
+        case 'IPHONES': return '📱 iPhones'
+        case 'AIRPODS': return '🎧 AirPods'
+        case 'MACBOOKS': return '💻 MacBooks'
+        case 'IPADS': return '📲 iPads'
+        case 'APPLE_WATCHES': return '⌚️ Apple Watches'
+        default: return toCapitalize(key || 'Категория')
+    }
 }

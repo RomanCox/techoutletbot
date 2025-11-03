@@ -19,6 +19,16 @@ export class ConfigStore {
         }
     }
 
+    /** Генерация новых данных */
+    setAll(next: ConfigData) {
+        this.data = next
+    }
+
+    /** Частичная генерация новых данных */
+    set(partial: Partial<ConfigData>) {
+        this.data = { ...this.data, ...partial }
+    }
+
     /** Загружаем конфиг из файла */
     async load() {
         try {

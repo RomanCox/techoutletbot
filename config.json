@@ -23,7 +23,7 @@
       "label": "👤 Связаться с менеджером",
       "type": "url",
       "url": "https://t.me/FBImen",
-      "prefillText": "Здравствуйте! Нужна консультация по"
+      "prefillText": "Здравствуйте! Нужна консультация по "
     },
     {
       "id": "CHOOSE_COLOR_AND_BUY",
@@ -36,288 +36,293 @@
     {
       "id": "GROUP_APPLE",
       "chapter": "PRODUCT_GROUP",
-      "label": "🗂 Apple",
+      "label": "🍏 Apple",
       "type": "callback",
       "payload": "APPLE"
     },
     {
-      "id": "CAT_APPLE_IPHONES",
+      "id": "GROUP_IPHONES",
       "chapter": "APPLE",
       "label": "📱 iPhones",
       "type": "callback",
       "payload": "IPHONES"
     },
     {
-      "id": "CAT_APPLE_AIRPODS",
+      "id": "GROUP_AIRPODS",
       "chapter": "APPLE",
       "label": "🎧 AirPods",
       "type": "callback",
       "payload": "AIRPODS"
     },
     {
-      "id": "IPHONES_IPHONE_16E_128",
+      "id": "IPHONE_IPHONE_16E_128",
       "chapter": "IPHONES",
       "label": "iPhone 16E",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_16E_128",
       "memory": "128",
       "price": "580",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16E_128"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16E_256",
+      "id": "IPHONE_IPHONE_16E_256",
       "chapter": "IPHONES",
       "label": "iPhone 16E",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_16E_256",
       "memory": "256",
       "price": "740",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16E_256"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16_128",
+      "id": "IPHONE_IPHONE_16_128",
       "chapter": "IPHONES",
       "label": "iPhone 16",
-      "memory": "128",
-      "price": "740",
       "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16_128"
+      "payload": "ITEM:IPHONE_IPHONE_16_128",
+      "memory": "128",
+      "price": "730",
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16_156",
+      "id": "IPHONE_IPHONE_16_156",
       "chapter": "IPHONES",
       "label": "Iphone 16",
-      "memory": "156",
-      "price": "840",
       "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16_156"
+      "payload": "ITEM:IPHONE_IPHONE_16_156",
+      "memory": "156",
+      "price": "830",
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16_PLUS_128",
+      "id": "IPHONE_IPHONE_16_PLUS_128",
       "chapter": "IPHONES",
       "label": "iPhone 16 Plus",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_16_PLUS_128",
       "memory": "128",
       "price": "750",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16_PLUS_128"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16_PLUS_256",
+      "id": "IPHONE_IPHONE_16_PLUS_256",
       "chapter": "IPHONES",
       "label": "iPhone 16 Plus",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_16_PLUS_256",
       "memory": "256",
       "price": "1000",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16_PLUS_256"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16_PRO_128",
+      "id": "IPHONE_IPHONE_16_PRO_128",
       "chapter": "IPHONES",
       "label": "iPhone 16 Pro",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_16_PRO_128",
       "memory": "128",
       "price": "1100",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16_PRO_128"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16_PRO_256",
+      "id": "IPHONE_IPHONE_16_PRO_256",
       "chapter": "IPHONES",
       "label": "iPhone 16 Pro",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_16_PRO_256",
       "memory": "256",
       "price": "1270",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16_PRO_256"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16_PRO_512",
+      "id": "IPHONE_IPHONE_16_PRO_512",
       "chapter": "IPHONES",
       "label": "iPhone 16 Pro",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_16_PRO_512",
       "memory": "512",
       "price": "1480",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16_PRO_512"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16_PRO_1024",
+      "id": "IPHONE_IPHONE_16_PRO_1024",
       "chapter": "IPHONES",
       "label": "iPhone 16 Pro",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_16_PRO_1024",
       "memory": "1024",
       "price": "1700",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16_PRO_1024"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16_PRO_MAX_256",
+      "id": "IPHONE_IPHONE_16_PRO_MAX_256",
       "chapter": "IPHONES",
       "label": "iPhone 16 Pro Max",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_16_PRO_MAX_256",
       "memory": "256",
       "price": "1300",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16_PRO_MAX_256"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16_PRO_MAX_512",
+      "id": "IPHONE_IPHONE_16_PRO_MAX_512",
       "chapter": "IPHONES",
       "label": "iPhone 16 Pro Max",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_16_PRO_MAX_512",
       "memory": "512",
       "price": "1500",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16_PRO_MAX_512"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_16_PRO_MAX_1024",
+      "id": "IPHONE_IPHONE_16_PRO_MAX_1024",
       "chapter": "IPHONES",
       "label": "iPhone 16 Pro Max",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_16_PRO_MAX_1024",
       "memory": "1024",
       "price": "1900",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_16_PRO_MAX_1024"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_AIR_256",
+      "id": "IPHONE_IPHONE_AIR_256",
       "chapter": "IPHONES",
       "label": "iPhone Air",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_AIR_256",
       "memory": "256",
-      "price": "990",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_AIR_256"
+      "price": "950",
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_AIR_512",
+      "id": "IPHONE_IPHONE_AIR_512",
       "chapter": "IPHONES",
       "label": "iPhone Air",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_AIR_512",
       "memory": "512",
       "price": "1200",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_AIR_512"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_AIR_1024",
+      "id": "IPHONE_IPHONE_AIR_1024",
       "chapter": "IPHONES",
       "label": "iPhone Air",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_AIR_1024",
       "memory": "1024",
       "price": "1400",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_AIR_1024"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_17_256",
+      "id": "IPHONE_IPHONE_17_256",
       "chapter": "IPHONES",
       "label": "iPhone 17",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_17_256",
       "memory": "256",
       "price": "980",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_17_256"
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_17_512",
+      "id": "IPHONE_IPHONE_17_512",
       "chapter": "IPHONES",
       "label": "iPhone 17",
-      "memory": "512",
-      "price": "1260",
       "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_17_512"
+      "payload": "ITEM:IPHONE_IPHONE_17_512",
+      "memory": "512",
+      "price": "1200",
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_17_PRO_256",
+      "id": "IPHONE_IPHONE_17_PRO_256",
       "chapter": "IPHONES",
       "label": "iPhone 17 Pro",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_17_PRO_256",
       "memory": "256",
-      "price": "1290",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_17_PRO_256"
+      "price": "1250",
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_17_PRO_512",
+      "id": "IPHONE_IPHONE_17_PRO_512",
       "chapter": "IPHONES",
       "label": "iPhone 17 Pro",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_17_PRO_512",
       "memory": "512",
-      "price": "1620",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_17_PRO_512"
+      "price": "1500",
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_17_PRO_1024",
+      "id": "IPHONE_IPHONE_17_PRO_1024",
       "chapter": "IPHONES",
       "label": "iPhone 17 Pro",
-      "memory": "1024",
-      "price": "1770",
       "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_17_PRO_1024"
+      "payload": "ITEM:IPHONE_IPHONE_17_PRO_1024",
+      "memory": "1024",
+      "price": "1750",
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_17_PRO_MAX_256",
+      "id": "IPHONE_IPHONE_17_PRO_MAX_256",
       "chapter": "IPHONES",
       "label": "iPhone 17 Pro Max",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_17_PRO_MAX_256",
       "memory": "256",
-      "price": "1450",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_17_PRO_MAX_256"
+      "price": "1400",
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_17_PRO_MAX_512",
+      "id": "IPHONE_IPHONE_17_PRO_MAX_512",
       "chapter": "IPHONES",
       "label": "iPhone 17 Pro Max",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_17_PRO_MAX_512",
       "memory": "512",
-      "price": "1720",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_17_PRO_MAX_512"
+      "price": "1630",
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_17_PRO_MAX_1024",
+      "id": "IPHONE_IPHONE_17_PRO_MAX_1024",
       "chapter": "IPHONES",
       "label": "iPhone 17 Pro Max",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_17_PRO_MAX_1024",
       "memory": "1024",
-      "price": "1950",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_17_PRO_MAX_1024"
+      "price": "1900",
+      "priceFrom": true
     },
     {
-      "id": "IPHONES_IPHONE_17_PRO_MAX_2048",
+      "id": "IPHONE_IPHONE_17_PRO_MAX_2048",
       "chapter": "IPHONES",
       "label": "iPhone 17 Pro Max",
+      "type": "callback",
+      "payload": "ITEM:IPHONE_IPHONE_17_PRO_MAX_2048",
       "memory": "2048",
-      "price": "2210",
-      "type": "callback",
-      "payload": "ITEM:IPHONES_IPHONE_17_PRO_MAX_2048"
+      "price": "2300",
+      "priceFrom": true
     },
     {
-      "id": "AIRPODS_AIRPODS_PRO_3",
-      "chapter": "AIRPODS",
-      "label": "AirPods Pro 3",
-      "price": "380",
-      "type": "callback",
-      "payload": "ITEM:AIRPODS_AIRPODS_PRO_3"
-    },
-    {
-      "id": "AIRPODS_AIRPODS_PRO_2_TYPE-C",
-      "chapter": "AIRPODS",
-      "label": "AirPods Pro 2 Type-C",
-      "price": "240",
-      "type": "callback",
-      "payload": "ITEM:AIRPODS_AIRPODS_PRO_2_TYPE-C"
-    },
-    {
-      "id": "AIRPODS_AIRPODS_4",
+      "id": "AIRPOD_AIRPODS_4",
       "chapter": "AIRPODS",
       "label": "AirPods 4",
+      "type": "callback",
+      "payload": "ITEM:AIRPOD_AIRPODS_4",
+      "memory": "0",
       "price": "160",
-      "type": "callback",
-      "payload": "ITEM:AIRPODS_AIRPODS_4"
+      "priceFrom": false
     },
     {
-      "id": "AIRPODS_AIRPODS_4_ANC",
-      "chapter": "AIRPODS",
-      "label": "AirPods 4 ANC",
-      "price": "210",
-      "type": "callback",
-      "payload": "ITEM:AIRPODS_AIRPODS_4_ANC"
-    },
-    {
-      "id": "AIRPODS_AIRPODS_MAX_TYPE-C",
+      "id": "AIRPOD_AIRPODS_MAX_TYPE-C",
       "chapter": "AIRPODS",
       "label": "AirPods Max Type-C",
-      "price": "580",
       "type": "callback",
-      "payload": "ITEM:AIRPODS_AIRPODS_MAX_TYPE-C"
+      "payload": "ITEM:AIRPOD_AIRPODS_MAX_TYPE-C",
+      "memory": "0",
+      "price": "580",
+      "priceFrom": false
     }
   ],
   "responses": {

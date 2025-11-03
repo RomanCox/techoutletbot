@@ -1,6 +1,6 @@
 import { Markup } from 'telegraf'
 import type { Ctx, Button } from '@core/types.js'
-import { formatMemory, formatPrice } from '@core/utils/format.js'
+import { renderItemLabel } from '@core/utils/helper.js'
 
 // ⚙️ Админ-панель
 export function adminMenuKeyboard() {
@@ -23,22 +23,14 @@ export function buildKeyboard(ctx: Ctx | undefined, chapter: string, config: any
         .filter((b) => b.chapter === chapter && b.chapter !== '_HIDDEN')
         .map((b) => {
             if (b.type === 'callback') {
-                // ── динамический текст для карточек товара
-                const isItem = b.payload.startsWith('ITEM:')
-                const hasMeta = !!(b.memory || b.price)
+                const text =
+                    typeof b.payload === 'string' && b.payload.startsWith('ITEM:')
+                        ? renderItemLabel(b)          // <-- товары форматируем аккуратно
+                        : b.label                     // категории/меню показываем как есть
 
-                const text = (isItem || hasMeta)
-                    ? [
-                        b.label,
-                        b.memory ? formatMemory(b.memory) : undefined,
-                        b.price  ? `— от ${formatPrice(b.price)}` : undefined,
-                    ].filter(Boolean).join(' ')
-                    : b.label
-
-                return [Markup.button.callback(text, b.payload)]
+                return [Markup.button.callback(text, b.payload as string)]
             } else {
-                const deep = buildDeepLink(b.url, b.prefillText)
-                return [Markup.button.url(b.label, deep)]
+                return [Markup.button.url(b.label, b.url)]
             }
         })
 

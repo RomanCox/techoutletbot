@@ -2,20 +2,17 @@ import { type Telegraf, Markup } from 'telegraf'
 import { show, showReplaceFromCallback } from '@core/ui/switcher.js'
 import { buildDeepLink, buildKeyboard } from '@core/ui/keyboards.js'
 import { formatMemory, formatPrice } from '@core/utils/format.js'
-import type { Ctx } from '@core/types.js'
+import type { Ctx, ButtonUrl } from '@core/types.js'
 
 export function registerResponses(bot: Telegraf<Ctx>, config: any) {
     bot.on('callback_query', async (ctx) => {
         const data = (ctx.callbackQuery as any)?.data as string | undefined
         if (!data) return
 
-        // 👇 Эти payload'ы обрабатывают спец-хендлеры из admin-модуля
         if (data === 'ADMIN' || data.startsWith('ADM_')) {
-            // ничего не делаем — пусть обработает registerAdmin
             return
         }
 
-        // 1) ДИНАМИЧЕСКИЕ ТОВАРЫ
         if (data.startsWith('ITEM:')) {
             const id = data.slice('ITEM:'.length)
 
@@ -28,51 +25,76 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
                 return
             }
 
-            // Родительская секция для «Назад»
-            // const parent = (cfg.parents?.[btn.chapter] ?? 'PRODUCT_GROUP')
             const listChapter = btn.chapter
 
             const name = btn.label
             const mem = formatMemory(btn.memory)
-            const price = formatPrice(btn.price)
+            const priceText = btn.price
+                ? (btn.priceFrom ? `от ${formatPrice(btn.price)}`
+                    : `${formatPrice(btn.price)}`)
+                : 'уточняйте'
 
-            const text =
-                `📱 Модель: ${name}
-💾 Память: ${mem}
-💶 Цена: от ${price}
-ℹ️ Цена зависит от региона поставки и цвета
+            const parts = [
+                `📱 Модель: ${name}`,
+                mem ? `💾 Память: ${mem}` : null,
+                `💶 Цена: ${priceText}`,
+                btn.priceFrom ? 'ℹ️ Цена зависит от региона поставки и цвета' : null,
+                ' ',
+                '<b>Под заказ 1–2 дня.</b>',
+                '<b>Новые, коробка запечатана.</b>',
+                '<b>Официальная гарантия 12 месяцев.</b>',
+                '<b>Цена указана в у.е для информации.</b>',
+                '<b>Оплата наличными по курсу в рублях.</b>',
+                ' ',
+                'Выберите товар:',
+            ]
 
-<b>Под заказ 1–2 дня.</b>
-<b>Новые, коробка запечатана.</b>
-<b>Официальная гарантия 12 месяцев.</b>
-<b>Цена указана в у.е для информации.</b>
-<b>Оплата наличными по курсу в рублях.</b>
+            const text = parts.filter(Boolean).join('\n')
 
-Выберите товар:`
+            // const buyBtn = cfg.buttons.find(
+            //     (b: any) => b.id === 'CHOOSE_COLOR_AND_BUY' && b.type === 'url'
+            // ) as (import('@core/types.js').ButtonUrl | undefined)
+            //
+            // let buyRow: any[] = []
+            //
+            // if (buyBtn?.url) {
+            //     const prefillParts = [
+            //         (buyBtn.prefillText ?? 'Здравствуйте! Хочу купить'),
+            //         name,
+            //         mem !== '—' ? mem : undefined,
+            //         priceText !== 'уточняйте' ? priceText + '.' : undefined,
+            //         name.includes('iPhone') ? 'Какие цвета есть в наличии?' : 'Есть в наличии?'
+            //     ].filter(Boolean)
+            //
+            //     const prefill = prefillParts.join(' ')
+            //     const deepUrl = buildDeepLink(buyBtn.url, prefill)
+            //     buyRow = [Markup.button.url('💸 Выбрать цвет и купить', deepUrl)]
+            // }
 
-            // Клавиатура карточки: контакт, назад, в главное
             const buyBtn = cfg.buttons.find(
                 (b: any) => b.id === 'CHOOSE_COLOR_AND_BUY' && b.type === 'url'
-            ) as (import('@core/types.js').ButtonUrl | undefined)
+            ) as (ButtonUrl | undefined)
 
             let buyRow: any[] = []
             if (buyBtn?.url) {
-                // соберём префилл: префикс из конфига + модель/память/цена
+                const hasFrom = !!btn.priceFrom
+                const buyText = hasFrom ? '💸 Выбрать цвет и купить' : '🛒 Купить'
+
                 const prefillParts = [
-                    (buyBtn.prefillText ?? 'Здравствуйте! Хочу купить'),
+                    (buyBtn.prefillText ?? (hasFrom ? 'Здравствуйте! Хочу купить' : 'Здравствуйте! Хочу купить')),
                     name,
-                    mem !== '—' ? mem : undefined,
-                    price !== 'уточняйте' ? 'от ' + price + '.' : undefined,
-                    'Какие цвета есть в наличие?'
+                    mem ? mem : undefined,
+                    priceText ? `- ${priceText}.` : undefined,
+                    hasFrom ? 'Какие цвета есть в наличии?' : 'Есть в наличии?',
                 ].filter(Boolean)
 
                 const prefill = prefillParts.join(' ')
                 const deepUrl = buildDeepLink(buyBtn.url, prefill)
-                buyRow = [Markup.button.url('💸 Выбрать цвет и купить', deepUrl)]
+                buyRow = [Markup.button.url(buyText, deepUrl)]
             }
+
             const kb = Markup.inlineKeyboard([
                 ...(buyRow.length ? [buyRow] : []),
-                // [Markup.button.callback('⬅️ Назад', parent)],
                 [Markup.button.callback('⬅️ Назад', listChapter)],
                 [Markup.button.callback('⬅️ В главное меню', 'MAIN')],
             ])
@@ -81,7 +103,6 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
             return
         }
 
-        // 2) Переходы по разделам (chapter), включая возврат в MAIN
         const cfg = config.get()
         const isChapter =
             data === 'MAIN' || cfg.buttons.some((b: any) => b.chapter === data)
@@ -110,13 +131,11 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
             if (data === 'MAIN') {
                 await showReplaceFromCallback(ctx, text, kb)
             } else {
-                // Остальные разделы — как раньше
                 await show(ctx, text, kb)
             }
             return
         }
 
-        // Ответы по payload
         const resp = cfg.responses[data]
         const kb = buildKeyboard(ctx, 'MAIN', config)
         await show(ctx, resp ?? 'Нет текста для этой кнопки. Админ может задать через /setresponse.', kb)

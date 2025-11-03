@@ -29,6 +29,7 @@ export interface ButtonBase {
     chapter: Chapter
     memory?: string
     price?: string
+    priceFrom?: boolean
 }
 
 export interface ButtonCallback extends ButtonBase {
