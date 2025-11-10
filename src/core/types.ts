@@ -30,6 +30,7 @@ export interface ButtonBase {
     memory?: string
     price?: string
     priceFrom?: boolean
+    priceRequest?: boolean
 }
 
 export interface ButtonCallback extends ButtonBase {

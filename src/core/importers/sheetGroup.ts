@@ -1,7 +1,7 @@
 import type { Button } from '@core/types.js'
 import { toCode, toCapitalize, prettyProductLabel } from '@core/utils/format.js'
 import { loadSheetAsRows } from '@core/importers/sheetTsv.js'
-import { num, priceOf } from '@core/utils/helper.js'
+import { num, resolveColumnKey } from '@core/utils/helper.js'
 
 type SheetSpec = { gid: number | string; title: string }
 
@@ -52,12 +52,29 @@ export async function importWorkbookGroups(
         const allRows = await loadSheetAsRows(sheetId, gid)
         if (!allRows.length) continue
 
+        const headers = Object.keys(allRows[0] ?? {})
+
+        const productKeyName =
+            resolveColumnKey(headers, ['product', 'товар']) ?? 'product'
+
+        const nameKeyName =
+            resolveColumnKey(headers, ['name', 'название', 'модель']) ?? 'name'
+
+        const memoryKeyName =
+            resolveColumnKey(headers, ['memory', 'память']) ?? 'memory'
+
+        const priceKeyName =
+            resolveColumnKey(headers, ['price', 'стоимость', 'цена']) ?? 'price'
+
         const rows = allRows.filter(r => {
-            const p = priceOf(r)
-            return p != null && p > 0
+            const raw = String(r[priceKeyName] ?? '').trim().toLowerCase()
+
+            if (!raw) return false
+
+            return !(raw === '0' || raw === '0.0' || raw === '0,0')
         })
+
         if (!rows.length) {
-            // можно оставить группу/страницу пустой, или скипнуть весь лист — выбери поведение
             continue
         }
 
@@ -100,21 +117,42 @@ export async function importWorkbookGroups(
             const rawProduct = String(r['product'] ?? r['Product'] ?? r['товар'] ?? '').trim()
             if (!rawProduct) continue
             const productKey = rawProduct.toUpperCase()
-            const productChapter = toCode(productKey)
+            const productChapter = toCode(productKey) // IPHONES…
 
             const name: string = String(r['name'] ?? r['Название'] ?? r['модель'] ?? '').trim()
+            const memory = num(r['memory'] ?? r['память'])
+
+            const rawPrice = String(r['price'] ?? r['стоимость'] ?? '').trim()
+
+            let priceRequest = false
+            let priceFrom = false
+            let priceNum: number | undefined
+
+            if (!rawPrice) {
+                continue
+            }
+
+            const lower = rawPrice.toLowerCase()
+
+            if (lower.includes('запрос')) {
+                priceRequest = true
+            } else {
+                if (lower.startsWith('от')) {
+                    priceFrom = true
+                }
+
+                priceNum = num(rawPrice)
+
+                if (!priceNum || priceNum === 0) {
+                    continue
+                }
+            }
+
             if (!name) continue
-
-            const memoryNum = num(r['memory'] ?? r['память'])
-            const rawPrice = String(r['price'] ?? r['стоимость'] ?? r['цена'] ?? '').trim()
-            const priceFrom = /^от\s*/i.test(rawPrice)
-            const priceNum = num(rawPrice)
-
-            if (!priceNum) continue
 
             const singular = productKey.endsWith('S') ? productKey.slice(0, -1) : productKey
             const idParts = [toCode(singular), toCode(name)]
-            if (memoryNum !== undefined && memoryNum > 0) idParts.push(toCode(String(memoryNum)))
+            if (memory) idParts.push(String(memory))
             const id = idParts.join('_')
 
             const btn: Button = {
@@ -123,9 +161,10 @@ export async function importWorkbookGroups(
                 label: name || 'ITEM',
                 type: 'callback',
                 payload: `ITEM:${id}`,
-                memory: String(memoryNum),
-                price: String(priceNum),
-                priceFrom,
+                memory: memory !== undefined ? String(memory) : undefined,
+                price: priceNum !== undefined ? String(priceNum) : undefined,
+                priceFrom: priceFrom,
+                priceRequest: priceRequest,
             } as any
 
             if (upsert(btn) === 'added') added++; else updated++

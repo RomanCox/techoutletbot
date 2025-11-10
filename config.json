@@ -62,7 +62,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16E_128",
       "memory": "128",
       "price": "580",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16E_256",
@@ -72,7 +73,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16E_256",
       "memory": "256",
       "price": "740",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16_128",
@@ -82,7 +84,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16_128",
       "memory": "128",
       "price": "730",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16_156",
@@ -92,7 +95,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16_156",
       "memory": "156",
       "price": "830",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16_PLUS_128",
@@ -102,7 +106,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16_PLUS_128",
       "memory": "128",
       "price": "750",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16_PLUS_256",
@@ -112,7 +117,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16_PLUS_256",
       "memory": "256",
       "price": "1000",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16_PRO_128",
@@ -122,7 +128,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16_PRO_128",
       "memory": "128",
       "price": "1100",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16_PRO_256",
@@ -132,7 +139,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16_PRO_256",
       "memory": "256",
       "price": "1270",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16_PRO_512",
@@ -142,7 +150,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16_PRO_512",
       "memory": "512",
       "price": "1480",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16_PRO_1024",
@@ -152,7 +161,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16_PRO_1024",
       "memory": "1024",
       "price": "1700",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16_PRO_MAX_256",
@@ -162,7 +172,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16_PRO_MAX_256",
       "memory": "256",
       "price": "1300",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16_PRO_MAX_512",
@@ -172,7 +183,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16_PRO_MAX_512",
       "memory": "512",
       "price": "1500",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_16_PRO_MAX_1024",
@@ -182,7 +194,8 @@
       "payload": "ITEM:IPHONE_IPHONE_16_PRO_MAX_1024",
       "memory": "1024",
       "price": "1900",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_AIR_256",
@@ -192,7 +205,8 @@
       "payload": "ITEM:IPHONE_IPHONE_AIR_256",
       "memory": "256",
       "price": "950",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_AIR_512",
@@ -202,7 +216,8 @@
       "payload": "ITEM:IPHONE_IPHONE_AIR_512",
       "memory": "512",
       "price": "1200",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_AIR_1024",
@@ -212,7 +227,8 @@
       "payload": "ITEM:IPHONE_IPHONE_AIR_1024",
       "memory": "1024",
       "price": "1400",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_17_256",
@@ -222,7 +238,8 @@
       "payload": "ITEM:IPHONE_IPHONE_17_256",
       "memory": "256",
       "price": "980",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_17_512",
@@ -232,7 +249,8 @@
       "payload": "ITEM:IPHONE_IPHONE_17_512",
       "memory": "512",
       "price": "1200",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_17_PRO_256",
@@ -242,7 +260,8 @@
       "payload": "ITEM:IPHONE_IPHONE_17_PRO_256",
       "memory": "256",
       "price": "1250",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_17_PRO_512",
@@ -252,7 +271,8 @@
       "payload": "ITEM:IPHONE_IPHONE_17_PRO_512",
       "memory": "512",
       "price": "1500",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_17_PRO_1024",
@@ -262,7 +282,8 @@
       "payload": "ITEM:IPHONE_IPHONE_17_PRO_1024",
       "memory": "1024",
       "price": "1750",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_17_PRO_MAX_256",
@@ -272,7 +293,8 @@
       "payload": "ITEM:IPHONE_IPHONE_17_PRO_MAX_256",
       "memory": "256",
       "price": "1400",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_17_PRO_MAX_512",
@@ -282,7 +304,8 @@
       "payload": "ITEM:IPHONE_IPHONE_17_PRO_MAX_512",
       "memory": "512",
       "price": "1630",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_17_PRO_MAX_1024",
@@ -292,7 +315,8 @@
       "payload": "ITEM:IPHONE_IPHONE_17_PRO_MAX_1024",
       "memory": "1024",
       "price": "1900",
-      "priceFrom": true
+      "priceFrom": true,
+      "priceRequest": false
     },
     {
       "id": "IPHONE_IPHONE_17_PRO_MAX_2048",
@@ -301,8 +325,8 @@
       "type": "callback",
       "payload": "ITEM:IPHONE_IPHONE_17_PRO_MAX_2048",
       "memory": "2048",
-      "price": "2300",
-      "priceFrom": true
+      "priceFrom": false,
+      "priceRequest": true
     },
     {
       "id": "AIRPOD_AIRPODS_4",
@@ -312,7 +336,8 @@
       "payload": "ITEM:AIRPOD_AIRPODS_4",
       "memory": "0",
       "price": "160",
-      "priceFrom": false
+      "priceFrom": false,
+      "priceRequest": false
     },
     {
       "id": "AIRPOD_AIRPODS_MAX_TYPE-C",
@@ -322,7 +347,8 @@
       "payload": "ITEM:AIRPOD_AIRPODS_MAX_TYPE-C",
       "memory": "0",
       "price": "580",
-      "priceFrom": false
+      "priceFrom": false,
+      "priceRequest": false
     }
   ],
   "responses": {

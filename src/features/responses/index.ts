@@ -29,10 +29,18 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
 
             const name = btn.label
             const mem = formatMemory(btn.memory)
-            const priceText = btn.price
-                ? (btn.priceFrom ? `от ${formatPrice(btn.price)}`
-                    : `${formatPrice(btn.price)}`)
-                : 'уточняйте'
+            // const priceText = btn.price
+            //     ? (btn.priceFrom ? `от ${formatPrice(btn.price)}`
+            //         : `${formatPrice(btn.price)}`)
+            //     : 'цена под запрос'
+
+            const priceNum = btn.price ? Number(btn.price) : undefined
+
+            const priceText = btn.priceRequest
+                ? 'под запрос'
+                : priceNum
+                    ? (btn.priceFrom ? `от ${formatPrice(priceNum)}` : formatPrice(priceNum))
+                    : 'уточняйте'
 
             const parts = [
                 `📱 Модель: ${name}`,

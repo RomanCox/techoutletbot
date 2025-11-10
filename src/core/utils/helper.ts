@@ -7,10 +7,6 @@ export function num(v: unknown): number | undefined {
     return Number.isFinite(n) ? n : undefined
 }
 
-export function priceOf(r: any): number | undefined {
-    return num(r['price'] ?? r['стоимость'] ?? r['цена'])
-}
-
 export function renderItemLabel(btn: Button): string {
     const name = btn.label ?? 'ITEM'
 
@@ -25,4 +21,13 @@ export function renderItemLabel(btn: Button): string {
 
     const left = [name, mem].filter(Boolean).join(' ')
     return `${left} — ${priceText}`
+}
+
+export function resolveColumnKey(headers: string[], variants: string[]): string | null {
+    const canon = headers.map(h => h.trim().toLowerCase())
+    for (const v of variants) {
+        const idx = canon.indexOf(v.toLowerCase())
+        if (idx !== -1) return headers[idx]
+    }
+    return null
 }
