@@ -1,7 +1,7 @@
-import type { Button } from '@core/types.js'
-import { toCode, toCapitalize, prettyProductLabel } from '@core/utils/format.js'
-import { loadSheetAsRows } from '@core/importers/sheetTsv.js'
-import { num, resolveColumnKey } from '@core/utils/helper.js'
+import type {Button} from '@core/types.js'
+import {prettyProductLabel, toCapitalize, toCode} from '@core/utils/format.js'
+import {loadSheetAsRows} from '@core/importers/sheetTsv.js'
+import {num, resolveColumnKey} from '@core/utils/helper.js'
 
 type SheetSpec = { gid: number | string; title: string }
 
@@ -47,6 +47,8 @@ export async function importWorkbookGroups(
         }
     }
 
+    let hasAnyImported = false
+
     for (const sheet of sheets) {
         const { gid, title } = sheet
         const allRows = await loadSheetAsRows(sheetId, gid)
@@ -59,9 +61,6 @@ export async function importWorkbookGroups(
 
         const nameKeyName =
             resolveColumnKey(headers, ['name', 'название', 'модель']) ?? 'name'
-
-        const memoryKeyName =
-            resolveColumnKey(headers, ['memory', 'память']) ?? 'memory'
 
         const priceKeyName =
             resolveColumnKey(headers, ['price', 'стоимость', 'цена']) ?? 'price'
@@ -83,7 +82,7 @@ export async function importWorkbookGroups(
         chaptersAdded++
 
         const groupBtn: Button = {
-            id: `GROUP_${pageChapter}`,
+            id: pageChapter,
             chapter: 'PRODUCT_GROUP',
             //TODO add function for generate label with true emojies (🍏for Apple and etc)
             label: `🍏 ${toCapitalize(title)}`,
@@ -102,9 +101,8 @@ export async function importWorkbookGroups(
         for (const productKey of productSet) {
             const productChapter = toCode(productKey)
             parents[productChapter] = pageChapter
-            const productBtnId = `GROUP_${productChapter}`
             const productBtn: Button = {
-                id: productBtnId,
+                id: productChapter,
                 chapter: pageChapter,
                 label: prettyProductLabel(productKey),
                 type: 'callback',
@@ -120,7 +118,6 @@ export async function importWorkbookGroups(
             const productChapter = toCode(productKey) // IPHONES…
 
             const name: string = String(r['name'] ?? r['Название'] ?? r['модель'] ?? '').trim()
-            const memory = num(r['memory'] ?? r['память'])
 
             const rawPrice = String(r['price'] ?? r['стоимость'] ?? '').trim()
 
@@ -150,10 +147,7 @@ export async function importWorkbookGroups(
 
             if (!name) continue
 
-            const singular = productKey.endsWith('S') ? productKey.slice(0, -1) : productKey
-            const idParts = [toCode(singular), toCode(name)]
-            if (memory) idParts.push(String(memory))
-            const id = idParts.join('_')
+            const id = toCode(name)
 
             const btn: Button = {
                 id,
@@ -161,7 +155,6 @@ export async function importWorkbookGroups(
                 label: name || 'ITEM',
                 type: 'callback',
                 payload: `ITEM:${id}`,
-                memory: memory !== undefined ? String(memory) : undefined,
                 price: priceNum !== undefined ? String(priceNum) : undefined,
                 priceFrom: priceFrom,
                 priceRequest: priceRequest,

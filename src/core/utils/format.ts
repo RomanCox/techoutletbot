@@ -22,13 +22,6 @@ export const formatPrice = (v?: string | number) => {
     })}`
 }
 
-export const formatMemory = (v?: string) => {
-    if (!v) return '—'
-    if (v === '0' ) return
-    const s = v.trim().replace(/\s*gb$/i, '')
-    return `${s} GB`
-}
-
 export function prettyProductLabel(key: string): string {
     switch (key) {
         case 'IPHONES': return '📱 iPhones'

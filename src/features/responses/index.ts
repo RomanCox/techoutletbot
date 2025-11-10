@@ -1,7 +1,7 @@
 import { type Telegraf, Markup } from 'telegraf'
 import { show, showReplaceFromCallback } from '@core/ui/switcher.js'
 import { buildDeepLink, buildKeyboard } from '@core/ui/keyboards.js'
-import { formatMemory, formatPrice } from '@core/utils/format.js'
+import { formatPrice } from '@core/utils/format.js'
 import type { Ctx, ButtonUrl } from '@core/types.js'
 
 export function registerResponses(bot: Telegraf<Ctx>, config: any) {
@@ -28,11 +28,6 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
             const listChapter = btn.chapter
 
             const name = btn.label
-            const mem = formatMemory(btn.memory)
-            // const priceText = btn.price
-            //     ? (btn.priceFrom ? `от ${formatPrice(btn.price)}`
-            //         : `${formatPrice(btn.price)}`)
-            //     : 'цена под запрос'
 
             const priceNum = btn.price ? Number(btn.price) : undefined
 
@@ -44,7 +39,6 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
 
             const parts = [
                 `📱 Модель: ${name}`,
-                mem ? `💾 Память: ${mem}` : null,
                 `💶 Цена: ${priceText}`,
                 btn.priceFrom ? 'ℹ️ Цена зависит от региона поставки и цвета' : null,
                 ' ',
@@ -71,7 +65,6 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
                 const prefillParts = [
                     (buyBtn.prefillText ?? (hasFrom ? 'Здравствуйте! Хочу заказать' : 'Здравствуйте! Хочу заказать')),
                     name,
-                    mem ? mem : undefined,
                     priceText ? `- ${priceText}.` : undefined,
                     hasFrom ? 'Какие цвета есть в наличии?' : 'Есть в наличии?',
                 ].filter(Boolean)

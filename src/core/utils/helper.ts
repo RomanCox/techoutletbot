@@ -10,16 +10,13 @@ export function num(v: unknown): number | undefined {
 export function renderItemLabel(btn: Button): string {
     const name = btn.label ?? 'ITEM'
 
-    const mem =
-        btn.memory && btn.memory.trim() !== '' && btn.memory !== '0'
-            ? `${btn.memory} GB`
-            : ''
-
     const priceText = btn.price
         ? (btn.priceFrom ? `от ${formatPrice(btn.price)}` : `${formatPrice(btn.price)}`)
         : 'уточняйте'
 
-    const left = [name, mem].filter(Boolean).join(' ')
+    const left = name.split(' ')
+        .map(word => word.replace(/,$/, ''))
+        .join(' ')
     return `${left} — ${priceText}`
 }
 
