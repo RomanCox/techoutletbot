@@ -56,6 +56,8 @@ export function buildKeyboard(ctx: Ctx | undefined, chapter: string, config: any
         ctx.from?.id &&
         config.isAdmin(ctx.from.id)
     ) {
+        //TODO delete after using original sheet
+        rows.push([Markup.button.callback('🧪 Debug: dump rows', 'DBG_ROWS')])
         rows.push([Markup.button.callback('⚙️ Admin Panel', 'ADMIN')])
     }
 

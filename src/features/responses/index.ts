@@ -9,7 +9,8 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
         const data = (ctx.callbackQuery as any)?.data as string | undefined
         if (!data) return
 
-        if (data === 'ADMIN' || data.startsWith('ADM_')) {
+        //TODO delete data.startsWith('DBG_') after changing sheet to original
+        if (data === 'ADMIN' || data.startsWith('ADM_') || data.startsWith('DBG_')) {
             return
         }
 
