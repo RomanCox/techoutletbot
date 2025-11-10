@@ -56,12 +56,6 @@ export async function importWorkbookGroups(
 
         const headers = Object.keys(allRows[0] ?? {})
 
-        const productKeyName =
-            resolveColumnKey(headers, ['product', 'товар']) ?? 'product'
-
-        const nameKeyName =
-            resolveColumnKey(headers, ['name', 'название', 'модель']) ?? 'name'
-
         const priceKeyName =
             resolveColumnKey(headers, ['price', 'стоимость', 'цена']) ?? 'price'
 
@@ -76,6 +70,8 @@ export async function importWorkbookGroups(
         if (!rows.length) {
             continue
         }
+
+        hasAnyImported = true
 
         const pageChapter = toCode(title)
         parents[pageChapter] = 'PRODUCT_GROUP'
@@ -162,6 +158,11 @@ export async function importWorkbookGroups(
 
             if (upsert(btn) === 'added') added++; else updated++
         }
+    }
+
+    if (!hasAnyImported) {
+        console.warn('[importWorkbookGroups] nothing imported – keeping existing config.json as-is')
+        return { added: 0, updated: 0, groupsAdded: 0, chaptersAdded: 0 }
     }
 
     const nextData = {
