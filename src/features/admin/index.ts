@@ -228,7 +228,6 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
         const text = cfg.texts.welcome
         const kb = buildKeyboard(ctx, 'MAIN', config)
 
-        // ВАЖНО: именно форс-замена (НЕ ctx.reply, НЕ show)
         await showReplaceFromCallback(ctx as any, text, kb)
     })
 }
