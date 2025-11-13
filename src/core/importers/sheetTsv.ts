@@ -37,7 +37,6 @@ function parseCsv(csv: string): Row[] {
     if (!header.length || header.every(h => !h)) return []
     const rows: Row[] = []
     for (let i = 1; i < lines.length; i++) {
-        // простой CSV-парсер (без кавычек/эскейпов)
         const cols = lines[i].split(',')
         const row: Row = {}
         header.forEach((key, idx) => (row[key] = (cols[idx] ?? '').trim()))

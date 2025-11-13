@@ -2,6 +2,7 @@ import type {Button} from '@core/types.js'
 import {prettyProductLabel, toCapitalize, toCode} from '@core/utils/format.js'
 import {loadSheetAsRows} from '@core/importers/sheetTsv.js'
 import {num, resolveColumnKey} from '@core/utils/helper.js'
+import {MANAGER_ACCOUNT} from "@core/constants.js";
 
 type SheetSpec = { gid: number | string; title: string }
 
@@ -21,8 +22,8 @@ export async function importWorkbookGroups(
 
     const defaultMainButtons: Button[] = [
         { id: 'PRODUCT_GROUP', chapter: 'MAIN', label: '🛍 Группа товаров', type: 'callback', payload: 'PRODUCT_GROUP' },
-        { id: 'CONTACT_MANAGER', chapter: 'MAIN', label: '👤 Связаться с менеджером', type: 'url', url: 'https://t.me/FBImen', prefillText: 'Здравствуйте! Нужна консультация по ' } as any,
-        { id: 'ORDER', chapter: '_HIDDEN', label: '💸 Выбрать цвет и заказать', type: 'url', url: 'https://t.me/FBImen', prefillText: 'Здравствуйте! Хочу заказать' } as any,
+        { id: 'CONTACT_MANAGER', chapter: 'MAIN', label: '👤 Связаться с менеджером', type: 'url', url: MANAGER_ACCOUNT, prefillText: 'Здравствуйте! Нужна консультация по ' } as any,
+        { id: 'ORDER', chapter: '_HIDDEN', label: '💸 Выбрать цвет и заказать', type: 'url', url: MANAGER_ACCOUNT, prefillText: 'Здравствуйте! Хочу заказать' } as any,
     ]
 
     const buttons: Button[] = [...defaultMainButtons]

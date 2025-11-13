@@ -22,7 +22,7 @@
       "chapter": "MAIN",
       "label": "👤 Связаться с менеджером",
       "type": "url",
-      "url": "https://t.me/FBImen",
+      "url": "https://t.me/techoutlet_by",
       "prefillText": "Здравствуйте! Нужна консультация по "
     },
     {
@@ -30,7 +30,7 @@
       "chapter": "_HIDDEN",
       "label": "💸 Выбрать цвет и заказать",
       "type": "url",
-      "url": "https://t.me/FBImen",
+      "url": "https://t.me/techoutlet_by",
       "prefillText": "Здравствуйте! Хочу заказать"
     },
     {
