@@ -5,14 +5,14 @@ import { renderItemLabel } from '@core/utils/helper.js'
 export function adminMenuKeyboard() {
     return Markup.inlineKeyboard([
         [Markup.button.callback('🔄 Импорт данных (все листы)', 'ADM_IMPORT_ALL_SHEETS')],
-        [Markup.button.callback('➕ Добавить кнопку', 'ADM_ADD_BTN')],
-        [Markup.button.callback('📝 Редактировать кнопку', 'ADM_EDIT_BTN')],
-        [Markup.button.callback('🗑 Удалить кнопку', 'ADM_DEL_BTN')],
-        [Markup.button.callback('📋 Список кнопок', 'ADM_LIST_BTNS')],
-        [Markup.button.callback('💬 Изменить приветствие', 'ADM_SET_WELCOME')],
-        [Markup.button.callback('💡 Изменить ответ payload', 'ADM_SET_RESPONSE')],
-        [Markup.button.callback('👤➕ Добавить админа', 'ADM_ADD_ADMIN')],
-        [Markup.button.callback('👤➖ Удалить админа', 'ADM_DEL_ADMIN')],
+        // [Markup.button.callback('➕ Добавить кнопку', 'ADM_ADD_BTN')],
+        // [Markup.button.callback('📝 Редактировать кнопку', 'ADM_EDIT_BTN')],
+        // [Markup.button.callback('🗑 Удалить кнопку', 'ADM_DEL_BTN')],
+        // [Markup.button.callback('📋 Список кнопок', 'ADM_LIST_BTNS')],
+        // [Markup.button.callback('💬 Изменить приветствие', 'ADM_SET_WELCOME')],
+        // [Markup.button.callback('💡 Изменить ответ payload', 'ADM_SET_RESPONSE')],
+        // [Markup.button.callback('👤➕ Добавить админа', 'ADM_ADD_ADMIN')],
+        // [Markup.button.callback('👤➖ Удалить админа', 'ADM_DEL_ADMIN')],
         [Markup.button.callback('⬅️ В главное меню', 'ADM_BACK_TO_MAIN')],
     ])
 }
@@ -29,7 +29,6 @@ export function buildKeyboard(ctx: Ctx | undefined, chapter: string, config: any
 
                 return [Markup.button.callback(text, b.payload as string)]
             } else {
-                // return [Markup.button.url(b.label, b.url)]
                 const deep = buildDeepLink(b.url, b.prefillText)
                 return [Markup.button.url(b.label, deep)]
             }

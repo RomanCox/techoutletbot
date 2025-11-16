@@ -1,0 +1,1 @@
+export const MANAGER_ACCOUNT = 'https://t.me/techoutlet_by'

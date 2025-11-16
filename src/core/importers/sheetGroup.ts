@@ -1,7 +1,8 @@
 import type { Button } from '@core/types.js'
-import { toCode, toCapitalize, prettyProductLabel } from '@core/utils/format.js'
+import { prettyProductLabel, toCapitalize, toCode } from '@core/utils/format.js'
 import { loadSheetAsRows } from '@core/importers/sheetTsv.js'
-import { num, priceOf } from '@core/utils/helper.js'
+import { num, resolveColumnKey } from '@core/utils/helper.js'
+import { MANAGER_ACCOUNT } from '@core/constants.js'
 
 type SheetSpec = { gid: number | string; title: string }
 
@@ -15,14 +16,35 @@ export async function importWorkbookGroups(
     const superUserIds: number[] = Array.isArray(cur.superUserIds) ? cur.superUserIds : []
     const adminUserIds: number[] = Array.isArray(cur.adminUserIds) ? cur.adminUserIds : []
     const welcome: string = cur?.texts?.welcome ?? 'Привет!'
+
     const baseResponses: Record<string, string> = {
         PRODUCT_GROUP: 'Выбери группу товаров:',
     }
 
     const defaultMainButtons: Button[] = [
-        { id: 'PRODUCT_GROUP', chapter: 'MAIN', label: '🛍 Группа товаров', type: 'callback', payload: 'PRODUCT_GROUP' },
-        { id: 'CONTACT_MANAGER', chapter: 'MAIN', label: '👤 Связаться с менеджером', type: 'url', url: 'https://t.me/FBImen', prefillText: 'Здравствуйте! Нужна консультация по ' } as any,
-        { id: 'ORDER', chapter: '_HIDDEN', label: '💸 Выбрать цвет и заказать', type: 'url', url: 'https://t.me/FBImen', prefillText: 'Здравствуйте! Хочу заказать' } as any,
+        {
+            id: 'PRODUCT_GROUP',
+            chapter: 'MAIN',
+            label: '🛍 Группа товаров',
+            type: 'callback',
+            payload: 'PRODUCT_GROUP',
+        },
+        {
+            id: 'CONTACT_MANAGER',
+            chapter: 'MAIN',
+            label: '👤 Связаться с менеджером',
+            type: 'url',
+            url: MANAGER_ACCOUNT,
+            prefillText: 'Здравствуйте! Нужна консультация по ',
+        } as any,
+        {
+            id: 'ORDER',
+            chapter: '_HIDDEN',
+            label: '💸 Выбрать цвет и заказать',
+            type: 'url',
+            url: MANAGER_ACCOUNT,
+            prefillText: 'Здравствуйте! Хочу заказать',
+        } as any,
     ]
 
     const buttons: Button[] = [...defaultMainButtons]
@@ -47,28 +69,36 @@ export async function importWorkbookGroups(
         }
     }
 
+    let hasAnyImported = false
+
     for (const sheet of sheets) {
         const { gid, title } = sheet
         const allRows = await loadSheetAsRows(sheetId, gid)
         if (!allRows.length) continue
 
+        const headers = Object.keys(allRows[0] ?? {})
+        const priceKeyName =
+            resolveColumnKey(headers, ['price', 'стоимость', 'цена']) ?? 'price'
+
         const rows = allRows.filter(r => {
-            const p = priceOf(r)
-            return p != null && p > 0
+            const raw = String(r[priceKeyName] ?? '').trim().toLowerCase()
+            if (!raw) return false
+            return !(raw === '0' || raw === '0.0' || raw === '0,0')
         })
+
         if (!rows.length) {
-            // можно оставить группу/страницу пустой, или скипнуть весь лист — выбери поведение
             continue
         }
+
+        hasAnyImported = true
 
         const pageChapter = toCode(title)
         parents[pageChapter] = 'PRODUCT_GROUP'
         chaptersAdded++
 
         const groupBtn: Button = {
-            id: `GROUP_${pageChapter}`,
+            id: pageChapter,
             chapter: 'PRODUCT_GROUP',
-            //TODO add function for generate label with true emojies (🍏for Apple and etc)
             label: `🍏 ${toCapitalize(title)}`,
             type: 'callback',
             payload: pageChapter,
@@ -85,9 +115,9 @@ export async function importWorkbookGroups(
         for (const productKey of productSet) {
             const productChapter = toCode(productKey)
             parents[productChapter] = pageChapter
-            const productBtnId = `GROUP_${productChapter}`
+
             const productBtn: Button = {
-                id: productBtnId,
+                id: productChapter,
                 chapter: pageChapter,
                 label: prettyProductLabel(productKey),
                 type: 'callback',
@@ -102,20 +132,36 @@ export async function importWorkbookGroups(
             const productKey = rawProduct.toUpperCase()
             const productChapter = toCode(productKey)
 
-            const name: string = String(r['name'] ?? r['Название'] ?? r['модель'] ?? '').trim()
+            const name: string = String(
+                r['name'] ?? r['Название'] ?? r['модель'] ?? ''
+            ).trim()
             if (!name) continue
 
-            const memoryNum = num(r['memory'] ?? r['память'])
-            const rawPrice = String(r['price'] ?? r['стоимость'] ?? r['цена'] ?? '').trim()
-            const priceFrom = /^от\s*/i.test(rawPrice)
-            const priceNum = num(rawPrice)
+            const rawPriceOriginal = String(r[priceKeyName] ?? '').trim()
+            if (!rawPriceOriginal) continue
 
-            if (!priceNum) continue
+            const rawPrice = rawPriceOriginal.replace(/\s+/g, ' ')
+            const lower = rawPrice.toLowerCase()
 
-            const singular = productKey.endsWith('S') ? productKey.slice(0, -1) : productKey
-            const idParts = [toCode(singular), toCode(name)]
-            if (memoryNum !== undefined && memoryNum > 0) idParts.push(toCode(String(memoryNum)))
-            const id = idParts.join('_')
+            let priceRequest = false
+            let priceFrom = false
+            let priceNum: number | undefined
+
+            if (lower.includes('запрос')) {
+                priceRequest = true
+            } else {
+                if (lower.startsWith('от')) {
+                    priceFrom = true
+                }
+
+                priceNum = num(rawPrice)
+
+                if (!priceNum || priceNum === 0) {
+                    continue
+                }
+            }
+
+            const id = toCode(name)
 
             const btn: Button = {
                 id,
@@ -123,13 +169,18 @@ export async function importWorkbookGroups(
                 label: name || 'ITEM',
                 type: 'callback',
                 payload: `ITEM:${id}`,
-                memory: String(memoryNum),
-                price: String(priceNum),
+                price: rawPrice,
                 priceFrom,
+                priceRequest,
             } as any
 
             if (upsert(btn) === 'added') added++; else updated++
         }
+    }
+
+    if (!hasAnyImported) {
+        console.warn('[importWorkbookGroups] nothing imported – keeping existing config.json as-is')
+        return { added: 0, updated: 0, groupsAdded: 0, chaptersAdded: 0 }
     }
 
     const nextData = {

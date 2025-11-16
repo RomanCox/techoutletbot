@@ -45,13 +45,7 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
         resetAdminSession(ctx.from!.id)
 
         await ctx.eReply(
-            `⚙️ Admin Panel
-
-Выберите действие:
-• Добавить/Редактировать/Удалить кнопку
-• Список кнопок
-• Изменить приветствие / ответ на payload
-• Управление администраторами (только для суперпользователя)`,
+            `⚙️ Admin Panel`,
             adminMenuKeyboard()
         )
     })
@@ -228,7 +222,6 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
         const text = cfg.texts.welcome
         const kb = buildKeyboard(ctx, 'MAIN', config)
 
-        // ВАЖНО: именно форс-замена (НЕ ctx.reply, НЕ show)
         await showReplaceFromCallback(ctx as any, text, kb)
     })
 }

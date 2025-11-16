@@ -1,7 +1,6 @@
 import { type Telegraf, Markup } from 'telegraf'
 import { show, showReplaceFromCallback } from '@core/ui/switcher.js'
 import { buildDeepLink, buildKeyboard } from '@core/ui/keyboards.js'
-import { formatMemory, formatPrice } from '@core/utils/format.js'
 import type { Ctx, ButtonUrl } from '@core/types.js'
 
 export function registerResponses(bot: Telegraf<Ctx>, config: any) {
@@ -18,7 +17,9 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
             const id = data.slice('ITEM:'.length)
 
             const cfg = config.get()
-            const btn = cfg.buttons.find((b: any) => b.id === id) as (import('@core/types.js').ButtonCallback | undefined)
+            const btn = cfg.buttons.find(
+                (b: any) => b.id === id
+            ) as (import('@core/types.js').ButtonCallback | undefined)
 
             if (!btn) {
                 await ctx.answerCbQuery()
@@ -27,25 +28,35 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
             }
 
             const listChapter = btn.chapter
-
             const name = btn.label
-            const mem = formatMemory(btn.memory)
-            const priceText = btn.price
-                ? (btn.priceFrom ? `от ${formatPrice(btn.price)}`
-                    : `${formatPrice(btn.price)}`)
-                : 'уточняйте'
+
+            const rawPrice =
+                typeof btn.price === 'string'
+                    ? btn.price.trim()
+                    : btn.price != null
+                        ? String(btn.price).trim()
+                        : ''
+
+            const hasPrice = rawPrice.length > 0
+
+            const priceText = btn.priceRequest
+                ? 'под запрос'
+                : hasPrice
+                    ? rawPrice           // "1700р" или "от 1700р"
+                    : 'уточняйте'
 
             const parts = [
                 `📱 Модель: ${name}`,
-                mem ? `💾 Память: ${mem}` : null,
                 `💶 Цена: ${priceText}`,
-                btn.priceFrom ? 'ℹ️ Цена зависит от региона поставки и цвета' : null,
+                btn.priceFrom
+                    ? 'ℹ️ Цена зависит от региона поставки и цвета'
+                    : null,
                 ' ',
-                '<b>❗️Под заказ 1–2 дня.</b>',
-                '<b>❗️Новые, коробка запечатана.</b>',
-                '<b>❗️Официальная гарантия 12 месяцев.</b>',
-                '<b>❗️Цена указана в у.е для информации.</b>',
-                '<b>❗️Оплата наличными по курсу в рублях.</b>',
+                '<b>☑️ Под заказ 1–2 дня.</b>',
+                '<b>☑️ Новые, коробка запечатана.</b>',
+                '<b>☑️ Гарантия 12 месяцев.</b>',
+                '<b>☑️ Возможна доставка по РБ🇧🇾.</b>',
+                '<b>☑️ Оплата наличными при получении.</b>',
                 ' ',
                 'Выберите товар:',
             ]
@@ -59,14 +70,20 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
             let buyRow: any[] = []
             if (buyBtn?.url) {
                 const hasFrom = !!btn.priceFrom
-                const buyText = hasFrom ? '💸 Выбрать цвет и заказать' : '🛒 Заказать'
+                const buyText = hasFrom
+                    ? '💸 Выбрать цвет и заказать'
+                    : '🛒 Заказать'
 
                 const prefillParts = [
-                    (buyBtn.prefillText ?? (hasFrom ? 'Здравствуйте! Хочу заказать' : 'Здравствуйте! Хочу заказать')),
+                    buyBtn.prefillText ??
+                    (hasFrom
+                        ? 'Здравствуйте! Хочу заказать'
+                        : 'Здравствуйте! Хочу заказать'),
                     name,
-                    mem ? mem : undefined,
-                    priceText ? `- ${priceText}.` : undefined,
-                    hasFrom ? 'Какие цвета есть в наличии?' : 'Есть в наличии?',
+                    hasPrice ? `- ${rawPrice}.` : undefined,
+                    hasFrom
+                        ? 'Какие цвета есть в наличии?'
+                        : 'Есть в наличии?',
                 ].filter(Boolean)
 
                 const prefill = prefillParts.join(' ')
@@ -99,11 +116,11 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
                 const parent = parents[data]
                 text = parent === 'PRODUCT_GROUP'
                     ? 'Выберите категорию:'
-                    : `<b>❗️Под заказ 1–2 дня.</b>
-<b>❗️Новые, коробка запечатана.</b>
-<b>❗️Официальная гарантия 12 месяцев.</b>
-<b>❗️Цена указана в у.е для информации.</b>
-<b>❗️Оплата наличными по курсу в рублях.</b>
+                    : `<b>☑️ Под заказ 1–2 дня.</b>
+<b>☑️ Новые, коробка запечатана.</b>
+<b>☑️ Гарантия 12 месяцев.</b>
+<b>☑️ Возможно доставка по РБ🇧🇾.</b>
+<b>☑️ Оплата наличными при получении.</b>
 
 Выберите товар:`
             }
