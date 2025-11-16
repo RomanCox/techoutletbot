@@ -40,6 +40,7 @@
   "parents": {
     "APPLE": "PRODUCT_GROUP",
     "IPHONES": "APPLE",
-    "AIRPODS": "APPLE"
+    "AIRPODS": "APPLE",
+    "MACBOOK": "APPLE"
   }
 }

@@ -1,8 +1,8 @@
-import type {Button} from '@core/types.js'
-import {prettyProductLabel, toCapitalize, toCode} from '@core/utils/format.js'
-import {loadSheetAsRows} from '@core/importers/sheetTsv.js'
-import {num, resolveColumnKey} from '@core/utils/helper.js'
-import {MANAGER_ACCOUNT} from "@core/constants.js";
+import type { Button } from '@core/types.js'
+import { prettyProductLabel, toCapitalize, toCode } from '@core/utils/format.js'
+import { loadSheetAsRows } from '@core/importers/sheetTsv.js'
+import { num, resolveColumnKey } from '@core/utils/helper.js'
+import { MANAGER_ACCOUNT } from '@core/constants.js'
 
 type SheetSpec = { gid: number | string; title: string }
 
@@ -16,14 +16,35 @@ export async function importWorkbookGroups(
     const superUserIds: number[] = Array.isArray(cur.superUserIds) ? cur.superUserIds : []
     const adminUserIds: number[] = Array.isArray(cur.adminUserIds) ? cur.adminUserIds : []
     const welcome: string = cur?.texts?.welcome ?? 'Привет!'
+
     const baseResponses: Record<string, string> = {
         PRODUCT_GROUP: 'Выбери группу товаров:',
     }
 
     const defaultMainButtons: Button[] = [
-        { id: 'PRODUCT_GROUP', chapter: 'MAIN', label: '🛍 Группа товаров', type: 'callback', payload: 'PRODUCT_GROUP' },
-        { id: 'CONTACT_MANAGER', chapter: 'MAIN', label: '👤 Связаться с менеджером', type: 'url', url: MANAGER_ACCOUNT, prefillText: 'Здравствуйте! Нужна консультация по ' } as any,
-        { id: 'ORDER', chapter: '_HIDDEN', label: '💸 Выбрать цвет и заказать', type: 'url', url: MANAGER_ACCOUNT, prefillText: 'Здравствуйте! Хочу заказать' } as any,
+        {
+            id: 'PRODUCT_GROUP',
+            chapter: 'MAIN',
+            label: '🛍 Группа товаров',
+            type: 'callback',
+            payload: 'PRODUCT_GROUP',
+        },
+        {
+            id: 'CONTACT_MANAGER',
+            chapter: 'MAIN',
+            label: '👤 Связаться с менеджером',
+            type: 'url',
+            url: MANAGER_ACCOUNT,
+            prefillText: 'Здравствуйте! Нужна консультация по ',
+        } as any,
+        {
+            id: 'ORDER',
+            chapter: '_HIDDEN',
+            label: '💸 Выбрать цвет и заказать',
+            type: 'url',
+            url: MANAGER_ACCOUNT,
+            prefillText: 'Здравствуйте! Хочу заказать',
+        } as any,
     ]
 
     const buttons: Button[] = [...defaultMainButtons]
@@ -56,15 +77,12 @@ export async function importWorkbookGroups(
         if (!allRows.length) continue
 
         const headers = Object.keys(allRows[0] ?? {})
-
         const priceKeyName =
             resolveColumnKey(headers, ['price', 'стоимость', 'цена']) ?? 'price'
 
         const rows = allRows.filter(r => {
             const raw = String(r[priceKeyName] ?? '').trim().toLowerCase()
-
             if (!raw) return false
-
             return !(raw === '0' || raw === '0.0' || raw === '0,0')
         })
 
@@ -81,7 +99,6 @@ export async function importWorkbookGroups(
         const groupBtn: Button = {
             id: pageChapter,
             chapter: 'PRODUCT_GROUP',
-            //TODO add function for generate label with true emojies (🍏for Apple and etc)
             label: `🍏 ${toCapitalize(title)}`,
             type: 'callback',
             payload: pageChapter,
@@ -98,6 +115,7 @@ export async function importWorkbookGroups(
         for (const productKey of productSet) {
             const productChapter = toCode(productKey)
             parents[productChapter] = pageChapter
+
             const productBtn: Button = {
                 id: productChapter,
                 chapter: pageChapter,
@@ -112,21 +130,22 @@ export async function importWorkbookGroups(
             const rawProduct = String(r['product'] ?? r['Product'] ?? r['товар'] ?? '').trim()
             if (!rawProduct) continue
             const productKey = rawProduct.toUpperCase()
-            const productChapter = toCode(productKey) // IPHONES…
+            const productChapter = toCode(productKey)
 
-            const name: string = String(r['name'] ?? r['Название'] ?? r['модель'] ?? '').trim()
+            const name: string = String(
+                r['name'] ?? r['Название'] ?? r['модель'] ?? ''
+            ).trim()
+            if (!name) continue
 
-            const rawPrice = String(r['price'] ?? r['стоимость'] ?? '').trim()
+            const rawPriceOriginal = String(r[priceKeyName] ?? '').trim()
+            if (!rawPriceOriginal) continue
+
+            const rawPrice = rawPriceOriginal.replace(/\s+/g, ' ')
+            const lower = rawPrice.toLowerCase()
 
             let priceRequest = false
             let priceFrom = false
             let priceNum: number | undefined
-
-            if (!rawPrice) {
-                continue
-            }
-
-            const lower = rawPrice.toLowerCase()
 
             if (lower.includes('запрос')) {
                 priceRequest = true
@@ -142,8 +161,6 @@ export async function importWorkbookGroups(
                 }
             }
 
-            if (!name) continue
-
             const id = toCode(name)
 
             const btn: Button = {
@@ -152,9 +169,9 @@ export async function importWorkbookGroups(
                 label: name || 'ITEM',
                 type: 'callback',
                 payload: `ITEM:${id}`,
-                price: priceNum !== undefined ? String(priceNum) : undefined,
-                priceFrom: priceFrom,
-                priceRequest: priceRequest,
+                price: rawPrice,
+                priceFrom,
+                priceRequest,
             } as any
 
             if (upsert(btn) === 'added') added++; else updated++
