@@ -17,7 +17,7 @@ export const formatPrice = (v?: string | number) => {
     if (v == null || v === '') return 'уточняйте'
     const n = Number(String(v).replace(/[^\d.,]/g, '').replace(',', '.'))
     if (!isFinite(n)) return String(v)
-    return `$${n.toLocaleString('en-US', {
+    return `${n.toLocaleString('en-US', {
         maximumFractionDigits: 0
     })}`
 }
