@@ -10,13 +10,26 @@ export function num(v: unknown): number | undefined {
 export function renderItemLabel(btn: Button): string {
     const name = btn.label ?? 'ITEM'
 
-    const priceText = btn.price
-        ? (btn.priceFrom ? `от ${formatPrice(btn.price)}` : `${formatPrice(btn.price)}`)
-        : 'уточняйте'
+    const rawPrice =
+        typeof btn.price === 'string'
+            ? btn.price.trim()
+            : btn.price != null
+                ? String(btn.price).trim()
+                : ''
 
-    const left = name.split(' ')
+    const hasPrice = rawPrice.length > 0
+
+    const priceText = btn.priceRequest
+        ? 'под запрос'
+        : hasPrice
+            ? rawPrice
+            : 'уточняйте'
+
+    const left = name
+        .split(' ')
         .map(word => word.replace(/,$/, ''))
         .join(' ')
+
     return `${left} — ${priceText}`
 }
 

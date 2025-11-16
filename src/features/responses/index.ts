@@ -1,7 +1,6 @@
 import { type Telegraf, Markup } from 'telegraf'
 import { show, showReplaceFromCallback } from '@core/ui/switcher.js'
 import { buildDeepLink, buildKeyboard } from '@core/ui/keyboards.js'
-import { formatPrice } from '@core/utils/format.js'
 import type { Ctx, ButtonUrl } from '@core/types.js'
 
 export function registerResponses(bot: Telegraf<Ctx>, config: any) {
@@ -17,7 +16,9 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
             const id = data.slice('ITEM:'.length)
 
             const cfg = config.get()
-            const btn = cfg.buttons.find((b: any) => b.id === id) as (import('@core/types.js').ButtonCallback | undefined)
+            const btn = cfg.buttons.find(
+                (b: any) => b.id === id
+            ) as (import('@core/types.js').ButtonCallback | undefined)
 
             if (!btn) {
                 await ctx.answerCbQuery()
@@ -26,21 +27,29 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
             }
 
             const listChapter = btn.chapter
-
             const name = btn.label
 
-            const rawPrice: string = (btn.price ?? '').toString().trim()
+            const rawPrice =
+                typeof btn.price === 'string'
+                    ? btn.price.trim()
+                    : btn.price != null
+                        ? String(btn.price).trim()
+                        : ''
+
+            const hasPrice = rawPrice.length > 0
 
             const priceText = btn.priceRequest
-                ? 'цена под запрос'
-                : rawPrice
-                    ? formatPrice(rawPrice)
+                ? 'под запрос'
+                : hasPrice
+                    ? rawPrice           // "1700р" или "от 1700р"
                     : 'уточняйте'
 
             const parts = [
                 `📱 Модель: ${name}`,
                 `💶 Цена: ${priceText}`,
-                btn.priceFrom ? 'ℹ️ Цена зависит от региона поставки и цвета' : null,
+                btn.priceFrom
+                    ? 'ℹ️ Цена зависит от региона поставки и цвета'
+                    : null,
                 ' ',
                 '<b>☑️ Под заказ 1–2 дня.</b>',
                 '<b>☑️ Новые, коробка запечатана.</b>',
@@ -60,13 +69,20 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
             let buyRow: any[] = []
             if (buyBtn?.url) {
                 const hasFrom = !!btn.priceFrom
-                const buyText = hasFrom ? '💸 Выбрать цвет и заказать' : '🛒 Заказать'
+                const buyText = hasFrom
+                    ? '💸 Выбрать цвет и заказать'
+                    : '🛒 Заказать'
 
                 const prefillParts = [
-                    (buyBtn.prefillText ?? (hasFrom ? 'Здравствуйте! Хочу заказать' : 'Здравствуйте! Хочу заказать')),
+                    buyBtn.prefillText ??
+                    (hasFrom
+                        ? 'Здравствуйте! Хочу заказать'
+                        : 'Здравствуйте! Хочу заказать'),
                     name,
-                    priceText ? `- ${priceText}.` : undefined,
-                    hasFrom ? 'Какие цвета есть в наличии?' : 'Есть в наличии?',
+                    hasPrice ? `- ${rawPrice}.` : undefined,
+                    hasFrom
+                        ? 'Какие цвета есть в наличии?'
+                        : 'Есть в наличии?',
                 ].filter(Boolean)
 
                 const prefill = prefillParts.join(' ')
