@@ -11,7 +11,6 @@ import { ConfigStore } from '../core/config/configStore.js'
 import { registerMenu } from '../features/menu/index.js'
 import { registerAdmin } from '../features/admin/index.js'
 import { registerResponses } from '../features/responses/index.js'
-import { registerDebug } from '@features/debug/index.js'
 
 async function main() {
     const config = new ConfigStore()

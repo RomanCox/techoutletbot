@@ -259,20 +259,3 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
         await showReplaceFromCallback(ctx as any, text, kb)
     })
 }
-
-/**
- * Отправляет текст и клавиатуру панели админа.
- */
-async function sendAdminPanel(ctx: Ctx) {
-    const text = `⚙️ Admin Panel
-
-Выберите действие:
-• Добавить кнопку
-• Редактировать кнопку
-• Удалить кнопку
-• Список кнопок
-• Изменить приветствие
-• Изменить ответ payload`
-
-    await show(ctx, text, adminMenuKeyboard())
-}
