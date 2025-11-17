@@ -29,18 +29,15 @@ export function callbacksAntiSpam(opts: AntiSpamOptions = {}): MiddlewareFn<Ctx>
     const enableLock = !!opts.enableLock
     const whitelist = new Set<string>(opts.whitelistPayloads ?? [])
 
-    // ключ — `${fromId}:${chatId}`
     const store = new Map<string, LockerState>()
 
     return async (ctx, next) => {
-        // интересуют только callback_query
         const cq: any = (ctx as any).callbackQuery
         if (!cq) return next()
 
         const data: string | undefined = cq?.data
         if (!data) return next()
 
-        // payload из вайтлиста — пропускаем
         if (whitelist.has(data)) return next()
 
         const fromId = ctx.from?.id
@@ -56,28 +53,24 @@ export function callbacksAntiSpam(opts: AntiSpamOptions = {}): MiddlewareFn<Ctx>
 
         const st = store.get(key) ?? { lastAt: 0, locked: false }
 
-        // 1) проверка на замок
         if (enableLock && st.locked) {
             try { await ctx.answerCbQuery('Подождите, выполняется действие…') } catch {}
-            return // НЕ пускаем дальше
+            return
         }
 
-        // 2) проверка cooldown
         const delta = now - st.lastAt
         if (delta < cooldownMs) {
             try { await ctx.answerCbQuery('Слишком часто. Попробуйте ещё раз чуть позже.') } catch {}
-            return // НЕ пускаем дальше
+            return
         }
 
-        // проходим: фиксируем время + ставим замок (если включён)
         st.lastAt = now
         if (enableLock) st.locked = true
         store.set(key, st)
 
         try {
-            await next() // запускаем основной обработчик
+            await next()
         } finally {
-            // снимаем замок и фиксируем «реальное» время завершения
             if (enableLock) st.locked = false
             st.lastAt = Date.now()
             store.set(key, st)

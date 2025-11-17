@@ -1,4 +1,3 @@
-// src/features/debug/index.ts
 import type { Telegraf } from 'telegraf'
 import type { Ctx } from '@core/types.js'
 import { adminMenuKeyboard } from '@core/ui/keyboards.js'
@@ -7,7 +6,6 @@ import { listSheets } from '@core/importers/listSheets.js'
 
 export function registerDebug(bot: Telegraf<Ctx>, config: any) {
     bot.action('DBG_ROWS', async (ctx) => {
-        // доступ только суперюзеру
         if (!config.isSuper(ctx.from?.id ?? -1)) {
             await ctx.answerCbQuery('⛔ Только суперпользователь.', { show_alert: true })
             return

@@ -19,11 +19,8 @@ async function main() {
 
     const bot = buildBot({ token: process.env.BOT_TOKEN!, config })
 
-    // Подключаем «фичи»
     registerMenu(bot, config)
     registerAdmin(bot, config)
-    //TODO delete registerDebug after using original sheet
-    registerDebug(bot, config)
     registerResponses(bot, config)
 
     await bot.launch()

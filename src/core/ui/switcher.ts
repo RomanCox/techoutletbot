@@ -18,7 +18,6 @@ export async function show(ctx: Ctx, text: string, keyboard: any): Promise<void>
         } catch {}
     }
 
-    // fallback: eReply (сам удалит activeMessageId), затем попробуем снести старое
     const msg = await ctx.eReply(text, { reply_markup: replyMarkup, parse_mode: 'HTML' })
     if (origChatId && origMsgId && msg?.message_id !== origMsgId) {
         try { await ctx.telegram.deleteMessage(origChatId, origMsgId) } catch {}

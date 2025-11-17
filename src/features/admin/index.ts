@@ -4,6 +4,7 @@ import { adminMenuKeyboard, buildKeyboard } from '@core/ui/keyboards.js'
 import { getAdminSession, resetAdminSession, setAdminSession } from '@core/session/fsm.js'
 import { importWorkbookGroups } from '@core/importers/sheetGroup.js'
 import { show, showReplaceFromCallback } from '@core/ui/switcher.js'
+import { listSheets } from '@core/importers/listSheets.js'
 
 /**
  * Получить ник или имя пользователя по ID (если бот когда-либо видел его)
@@ -50,7 +51,6 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
         )
     })
 
-    // 👤➕ Добавить админа
     bot.action('ADM_ADD_ADMIN', async (ctx) => {
         if (!config.isSuper(ctx.from?.id ?? -1)) {
             await ctx.answerCbQuery('⛔ Только суперпользователь может это сделать.', { show_alert: true })
@@ -66,7 +66,6 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
         setAdminSession(ctx.from!.id, s)
     })
 
-    // 👤➖ Удалить админа
     bot.action('ADM_DEL_ADMIN', async (ctx) => {
         if (!config.isSuper(ctx.from?.id ?? -1)) {
             await ctx.answerCbQuery('⛔ Только суперпользователь может это сделать.', { show_alert: true })
@@ -82,7 +81,6 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
         setAdminSession(ctx.from!.id, s)
     })
 
-    // Обработка сообщений с ID
     bot.on('message', async (ctx) => {
         if (ctx.chat?.type !== 'private') return
         const uid = ctx.from?.id
@@ -93,7 +91,6 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
         const text = (ctx.message as any).text?.trim() || ''
         if (!text) return
 
-        // ➕ Добавление админа
         if (s.mode === 'ADD_ADMIN__ASK_ID') {
             try {
                 const targetId = Number(text)
@@ -105,7 +102,6 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
                 const current = config.get()
                 const admins: number[] = Array.isArray(current.adminUserIds) ? current.adminUserIds : []
 
-                // Уже админ/супер — сообщаем и выходим
                 if (admins.includes(targetId) || config.isSuper(targetId)) {
                     await ctx.eReply(
                         `Пользователь ${targetId} ${await usernameOf(bot, targetId)} уже является администратором.`,
@@ -115,7 +111,6 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
                     return
                 }
 
-                // Добавляем и сохраняем
                 config.addAdmin(targetId)
                 await config.save()
                 resetAdminSession(uid)
@@ -129,12 +124,10 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
             } catch (e) {
                 console.error('[ADD_ADMIN__ASK_ID error]', e)
                 await ctx.eReply('Не удалось добавить администратора. Проверьте ID и попробуйте снова.', adminMenuKeyboard())
-                // сессию не сбрасываем — можно ввести ещё раз
             }
             return
         }
 
-        // ➖ Удаление админа
         if (s.mode === 'DEL_ADMIN__ASK_ID') {
             try {
                 const targetId = Number(text)
@@ -146,7 +139,6 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
                 const current = config.get()
                 const admins: number[] = Array.isArray(current.adminUserIds) ? current.adminUserIds : []
 
-                // Не админ — сообщаем и выходим
                 if (!admins.includes(targetId)) {
                     await ctx.eReply(
                         `Пользователь ${targetId} ${await usernameOf(bot, targetId)} не является администратором.`,
@@ -156,7 +148,6 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
                     return
                 }
 
-                // Удаляем и сохраняем
                 config.removeAdmin(targetId)
                 await config.save()
                 resetAdminSession(uid)
@@ -170,43 +161,86 @@ export function registerAdmin(bot: Telegraf<Ctx>, config: any) {
             } catch (e) {
                 console.error('[DEL_ADMIN__ASK_ID error]', e)
                 await ctx.eReply('Не удалось удалить администратора. Проверьте ID и попробуйте снова.', adminMenuKeyboard())
-                // сессию не сбрасываем — можно ввести ещё раз
             }
             return
         }
     })
 
-    // 🔄 Импорт страниц из Google Sheets
     bot.action('ADM_IMPORT_ALL_SHEETS', async (ctx) => {
         if (!config.isSuper(ctx.from?.id ?? -1)) {
             await ctx.answerCbQuery('⛔ Только суперпользователь может это сделать.', { show_alert: true })
             return
         }
-        await ctx.answerCbQuery()
+
+        const s: any = (ctx as any).session ?? ((ctx as any).session = {})
+
+        if (s.isImporting) {
+            try { await ctx.answerCbQuery('Импорт уже выполняется…') } catch {}
+            return
+        }
+
+        const SHEET_ID = process.env.GOOGLE_SHEET_ID!
+        if (!SHEET_ID) {
+            const kb = buildKeyboard(ctx as any, 'MAIN', config)
+            await showReplaceFromCallback(
+                ctx as any,
+                '❌ GOOGLE_SHEET_ID не задан в .env',
+                kb,
+            )
+            return
+        }
+
+        s.isImporting = true
 
         try {
-            const SHEETS = [
-                { gid: process.env.APPLE_SHEET_GID!, title: process.env.APPLE_SHEET_LABEL! },
-                // { gid: 12345, title: 'ANDROID' },
-                // { gid: 67890, title: 'CONSOLES' },
-            ]
+            try {
+                await ctx.answerCbQuery('Импорт запущен…')
+            } catch {}
 
-            const res = await importWorkbookGroups(config, process.env.GOOGLE_SHEET_ID!, SHEETS)
-
-            await ctx.eReply(
-                `✅ Импорт завершён.
-Добавлено: ${res.added}
-Обновлено: ${res.updated}
-Групп добавлено: ${res.groupsAdded}
-Разделов добавлено: ${res.chaptersAdded}`,
-                { reply_markup: (adminMenuKeyboard() as any).reply_markup }
+            const kbBusy = adminMenuKeyboard(true)
+            await showReplaceFromCallback(
+                ctx as any,
+                '⏳ Импорт данных из таблицы…\nЭто может занять несколько секунд.',
+                kbBusy,
             )
-        } catch (e) {
-            console.error('[ADM_IMPORT_ALL_SHEETS]', e)
-            const msg = e instanceof Error ? e.message : String(e)
-            await ctx.eReply(`⚠️ Ошибка импорта: ${msg}`, {
-                reply_markup: (adminMenuKeyboard() as any).reply_markup,
-            })
+
+            const allSheets = await listSheets(SHEET_ID)
+
+            const SHEETS = allSheets
+                .filter(s => !s.title.startsWith('_'))
+                .map(s => ({ gid: s.gid, title: s.title }))
+
+            if (!SHEETS.length) {
+                const kb = buildKeyboard(ctx as any, 'MAIN', config)
+                await showReplaceFromCallback(
+                    ctx as any,
+                    '⚠️ Не нашёл ни одной вкладки для импорта.',
+                    kb,
+                )
+                return
+            }
+
+            const res = await importWorkbookGroups(config, SHEET_ID, SHEETS)
+
+            const text =
+                `✅ Импорт завершён.\n` +
+                `Добавлено: ${res.added}\n` +
+                `Обновлено: ${res.updated}\n` +
+                `Групп добавлено: ${res.groupsAdded}\n` +
+                `Разделов добавлено: ${res.chaptersAdded}`
+
+            const kbAdmin = buildKeyboard(ctx as any, 'MAIN', config)
+            await showReplaceFromCallback(ctx as any, text, kbAdmin)
+        } catch (e: any) {
+            console.error('[ADM_IMPORT_ALL_SHEETS] error', e)
+            const kbAdmin = adminMenuKeyboard(false)
+            await showReplaceFromCallback(
+                ctx as any,
+                '⚠️ Ошибка импорта. Проверь доступ к таблице / лог сервера.',
+                kbAdmin,
+            )
+        } finally {
+            s.isImporting = false
         }
     })
 

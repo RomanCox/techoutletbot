@@ -8,8 +8,7 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
         const data = (ctx.callbackQuery as any)?.data as string | undefined
         if (!data) return
 
-        //TODO delete data.startsWith('DBG_') after changing sheet to original
-        if (data === 'ADMIN' || data.startsWith('ADM_') || data.startsWith('DBG_')) {
+        if (data === 'ADMIN' || data.startsWith('ADM_')) {
             return
         }
 
@@ -42,7 +41,7 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
             const priceText = btn.priceRequest
                 ? 'под запрос'
                 : hasPrice
-                    ? rawPrice           // "1700р" или "от 1700р"
+                    ? rawPrice
                     : 'уточняйте'
 
             const parts = [
@@ -52,11 +51,12 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
                     ? 'ℹ️ Цена зависит от региона поставки и цвета'
                     : null,
                 ' ',
-                '<b>☑️ Под заказ 1–2 дня.</b>',
-                '<b>☑️ Новые, коробка запечатана.</b>',
-                '<b>☑️ Гарантия 12 месяцев.</b>',
-                '<b>☑️ Возможна доставка по РБ🇧🇾.</b>',
-                '<b>☑️ Оплата наличными при получении.</b>',
+                '<b>✅ Под заказ со склада 1-2 дня.</b>',
+                '<b>✅ Новые, коробка запечатана.</b>',
+                '<b>✅ Гарантия 12 месяцев.</b>',
+                '<b>✅ Самовывоз или доставка.</b>',
+                '<b>✅ Оплата наличными при получении.</b>',
+                '<b>♻️ Выгодный Trade-In.</b>',
                 ' ',
                 'Выберите товар:',
             ]
@@ -69,24 +69,18 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
 
             let buyRow: any[] = []
             if (buyBtn?.url) {
-                const hasFrom = !!btn.priceFrom
-                const buyText = hasFrom
+                const buyText = btn.priceFrom
                     ? '💸 Выбрать цвет и заказать'
                     : '🛒 Заказать'
 
-                const prefillParts = [
-                    buyBtn.prefillText ??
-                    (hasFrom
-                        ? 'Здравствуйте! Хочу заказать'
-                        : 'Здравствуйте! Хочу заказать'),
+                const prefill = [
+                    buyBtn.prefillText ?? 'Здравствуйте! Хочу заказать',
                     name,
-                    hasPrice ? `- ${rawPrice}.` : undefined,
-                    hasFrom
-                        ? 'Какие цвета есть в наличии?'
-                        : 'Есть в наличии?',
-                ].filter(Boolean)
+                    priceText ? `- ${priceText}.` : undefined,
+                ]
+                    .filter(Boolean)
+                    .join(' ')
 
-                const prefill = prefillParts.join(' ')
                 const deepUrl = buildDeepLink(buyBtn.url, prefill)
                 buyRow = [Markup.button.url(buyText, deepUrl)]
             }
@@ -103,26 +97,52 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
 
         const cfg = config.get()
         const isChapter =
-            data === 'MAIN' || cfg.buttons.some((b: any) => b.chapter === data)
+            data === 'MAIN' ||
+            data === 'PRODUCT_GROUP' ||
+            cfg.buttons.some((b: any) => b.chapter === data)
+
         if (isChapter) {
             const parents: Record<string, string> = cfg.parents || {}
 
+            const hasButtonsInChapter = cfg.buttons.some(
+                (b: any) => b.chapter === data && b.chapter !== '_HIDDEN'
+            )
+
             let text: string
+
             if (data === 'MAIN') {
                 text = cfg.texts.welcome
+
             } else if (data === 'PRODUCT_GROUP') {
-                text = 'Выберите категорию:'
+                const hasAnyGroups = cfg.buttons.some(
+                    (b: any) => b.chapter === 'PRODUCT_GROUP'
+                )
+
+                text = hasAnyGroups
+                    ? 'Выберите категорию:'
+                    : 'Сейчас товары недоступны.\n\n' +
+                    'Пожалуйста, загляните позже или напишите менеджеру — мы поможем подобрать вариант вручную.'
+
             } else {
                 const parent = parents[data]
-                text = parent === 'PRODUCT_GROUP'
-                    ? 'Выберите категорию:'
-                    : `<b>☑️ Под заказ 1–2 дня.</b>
-<b>☑️ Новые, коробка запечатана.</b>
-<b>☑️ Гарантия 12 месяцев.</b>
-<b>☑️ Возможно доставка по РБ🇧🇾.</b>
-<b>☑️ Оплата наличными при получении.</b>
+
+                if (!hasButtonsInChapter) {
+                    text =
+                        'В этой категории пока нет товаров.\n\n' +
+                        'Попробуйте вернуться назад или выбрать другую категорию.'
+                } else {
+                    text =
+                        parent === 'PRODUCT_GROUP'
+                            ? 'Выберите категорию:'
+                            : `<b>✅ Под заказ со склада 1-2 дня.</b>
+<b>✅ Новые, коробка запечатана.</b>
+<b>✅ Гарантия 12 месяцев.</b>
+<b>✅ Самовывоз или доставка.</b>
+<b>✅ Оплата наличными при получении.</b>
+<b>♻️ Выгодный Trade-In.</b>
 
 Выберите товар:`
+                }
             }
 
             const kb = buildKeyboard(ctx, data, config)
@@ -136,6 +156,10 @@ export function registerResponses(bot: Telegraf<Ctx>, config: any) {
 
         const resp = cfg.responses[data]
         const kb = buildKeyboard(ctx, 'MAIN', config)
-        await show(ctx, resp ?? 'Нет текста для этой кнопки. Админ может задать через /setresponse.', kb)
+        await show(
+            ctx,
+            resp ?? 'Нет текста для этой кнопки. Админ может задать через /setresponse.',
+            kb
+        )
     })
 }

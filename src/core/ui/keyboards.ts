@@ -2,17 +2,16 @@ import { Markup } from 'telegraf'
 import type { Ctx, Button } from '@core/types.js'
 import { renderItemLabel } from '@core/utils/helper.js'
 
-export function adminMenuKeyboard() {
+export function adminMenuKeyboard(busy = false) {
+    if (busy) {
+        return Markup.inlineKeyboard([
+            [Markup.button.callback('⏳ Импорт идёт…', 'ADM_IMPORT_BUSY')],
+            [Markup.button.callback('⬅️ В главное меню', 'ADM_BACK_TO_MAIN')],
+        ])
+    }
+
     return Markup.inlineKeyboard([
         [Markup.button.callback('🔄 Импорт данных (все листы)', 'ADM_IMPORT_ALL_SHEETS')],
-        // [Markup.button.callback('➕ Добавить кнопку', 'ADM_ADD_BTN')],
-        // [Markup.button.callback('📝 Редактировать кнопку', 'ADM_EDIT_BTN')],
-        // [Markup.button.callback('🗑 Удалить кнопку', 'ADM_DEL_BTN')],
-        // [Markup.button.callback('📋 Список кнопок', 'ADM_LIST_BTNS')],
-        // [Markup.button.callback('💬 Изменить приветствие', 'ADM_SET_WELCOME')],
-        // [Markup.button.callback('💡 Изменить ответ payload', 'ADM_SET_RESPONSE')],
-        // [Markup.button.callback('👤➕ Добавить админа', 'ADM_ADD_ADMIN')],
-        // [Markup.button.callback('👤➖ Удалить админа', 'ADM_DEL_ADMIN')],
         [Markup.button.callback('⬅️ В главное меню', 'ADM_BACK_TO_MAIN')],
     ])
 }
@@ -55,8 +54,6 @@ export function buildKeyboard(ctx: Ctx | undefined, chapter: string, config: any
         ctx.from?.id &&
         config.isAdmin(ctx.from.id)
     ) {
-        //TODO delete after using original sheet
-        rows.push([Markup.button.callback('🧪 Debug: dump rows', 'DBG_ROWS')])
         rows.push([Markup.button.callback('⚙️ Admin Panel', 'ADMIN')])
     }
 

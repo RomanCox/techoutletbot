@@ -10,7 +10,6 @@ export function buildBot({ token, config }: { token: string; config: any }) {
 
     bot.use(errorsMiddleware())
 
-    // ✅ session с кастомным ключом для callback_query
     const sessionMw = session({
         getSessionKey: (ctx) => {
             const fromId = ctx.from?.id
@@ -21,11 +20,10 @@ export function buildBot({ token, config }: { token: string; config: any }) {
             return fromId && chatId ? `${fromId}:${chatId}` : undefined
         },
         defaultSession: (): SessionData => ({}),
-    }) as unknown as import('telegraf').Middleware<Ctx> // ← привели тип под твой Ctx
+    }) as unknown as import('telegraf').Middleware<Ctx>
 
     bot.use(sessionMw)
 
-    // eReply: одно активное сообщение
     bot.use((ctx, next) => {
         ctx.config = config
 
@@ -54,10 +52,9 @@ export function buildBot({ token, config }: { token: string; config: any }) {
     bot.use(aclMiddleware({ onlyPrivate: true }))
 
     // ✅ антиспам по кликам (подключаем ДО registerFeatures)
-    // bot.use(callbacksAntiSpam({ cooldownMs: 800, enableLock: true }))
     bot.use(
         callbacksAntiSpam({
-            cooldownMs: 800,
+            cooldownMs: 500,
             enableLock: true,
             whitelistPayloads: [
                 'MAIN',

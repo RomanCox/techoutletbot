@@ -1,4 +1,3 @@
-// src/core/session/session.ts
 export interface SessionStorage<T> {
     get(userId: number): T | undefined
     set(userId: number, data: T): void

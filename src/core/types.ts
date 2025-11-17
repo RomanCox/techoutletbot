@@ -95,13 +95,3 @@ export interface AdminSession {
     workingButtonId?: string
     workingKey?: 'id' | 'label' | 'type' | 'chapter' | 'payload' | 'url'
 }
-
-/**
- * Если захочешь расширить Telegraf Context глобально, можно так:
- *
- * declare module 'telegraf' {
- *   interface Context {
- *     // session?: { ...твои поля... }
- *   }
- * }
- */
